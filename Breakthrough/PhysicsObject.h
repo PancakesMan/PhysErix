@@ -1,5 +1,6 @@
 #pragma once
 #include <glm\vec2.hpp>
+#include <glm\vec4.hpp>
 
 enum ShapeType { 
 	PLANE = 0, 
@@ -17,7 +18,11 @@ public:
 	virtual void debug() = 0;
 	virtual void makeGizmo() = 0;
 	virtual void resetPosition() {};
+	
+	ShapeType getShapeID() { return m_shapeID; }
+	glm::vec4 getColour() { return m_colour; }
 
 protected:
 	ShapeType m_shapeID;
+	glm::vec4 m_colour;
 };
