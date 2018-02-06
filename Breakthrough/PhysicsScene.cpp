@@ -1,3 +1,5 @@
+#include <Renderer2D.h>
+
 #include "PhysicsScene.h"
 #include "RigidBody.h"
 
@@ -55,8 +57,8 @@ void PhysicsScene::update(float dt)
 	}
 }
 
-void PhysicsScene::updateGizmos()
+void PhysicsScene::draw(aie::Renderer2D* renderer)
 {
 	for (auto pActor : m_actors)
-		pActor->makeGizmo();
+		pActor->draw(renderer);
 }

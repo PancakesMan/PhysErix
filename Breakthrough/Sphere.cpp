@@ -1,5 +1,6 @@
-#include <gizmos.h>
 #include <glm\glm.hpp>
+#include <Renderer2D.h>
+
 #include "Sphere.h"
 
 
@@ -14,13 +15,14 @@ Sphere::~Sphere()
 {
 }
 
-void Sphere::makeGizmo()
+void Sphere::draw(aie::Renderer2D* renderer)
 {
-	aie::Gizmos::add2DCircle(m_position, m_radius, 32, m_colour);
+	renderer->setRenderColour(m_colour.r, m_colour.g, m_colour.b, m_colour.a);
+	renderer->drawCircle(m_position.x, m_position.y, m_radius);
 }
 
 bool Sphere::checkCollision(PhysicsObject* pOther)
 {
 	Sphere* other = dynamic_cast<Sphere*>(pOther);
-	return glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
+	return other != nullptr && glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
 }

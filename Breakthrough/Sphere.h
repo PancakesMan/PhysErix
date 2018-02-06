@@ -7,7 +7,7 @@ public:
 	Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 colour);
 	~Sphere();
 
-	virtual void makeGizmo();
+	virtual void draw(aie::Renderer2D* renderer);
 	virtual bool checkCollision(PhysicsObject* pOther);
 
 	float getRadius() { return m_radius; }

@@ -8,6 +8,10 @@ enum ShapeType {
 	BOX
 };
 
+namespace aie {
+	class Renderer2D;
+}
+
 class PhysicsObject
 {
 protected:
@@ -16,7 +20,7 @@ protected:
 public:
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep) = 0;
 	virtual void debug() = 0;
-	virtual void makeGizmo() = 0;
+	virtual void draw(aie::Renderer2D* renderer) = 0;
 	virtual void resetPosition() {};
 	
 	ShapeType getShapeID() { return m_shapeID; }
