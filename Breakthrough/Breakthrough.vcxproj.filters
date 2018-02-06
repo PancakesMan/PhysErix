@@ -39,6 +39,9 @@
     <ClCompile Include="CompositeObject.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BreakthroughApp.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="CompositeObject.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
   </ItemGroup>

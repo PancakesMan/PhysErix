@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Input.h"
 #include "Sphere.h"
+#include "Plane.h"
 #include "CompositeObject.h"
 
 BreakthroughApp::BreakthroughApp() {
@@ -32,11 +33,14 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->addActor(ball1);
 	m_physicsScene->addActor(ball2);
 
-	CompositeObject* snowman = new CompositeObject();
-	snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
-	snowman->addComponent(new Sphere(glm::vec2(700, 275), glm::vec2(0, 0), 5.0f, 15, glm::vec4(1, 1, 1, 1)));
-	m_physicsScene->addActor(snowman);
-	snowman->applyForce(glm::vec2(50, 0));
+	//CompositeObject* snowman = new CompositeObject();
+	//snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
+	//snowman->addComponent(new Sphere(glm::vec2(700, 275), glm::vec2(0, 0), 5.0f, 15, glm::vec4(1, 1, 1, 1)));
+	//m_physicsScene->addActor(snowman);
+	//snowman->applyForce(glm::vec2(50, 0));
+
+	Plane* plane = new Plane(glm::vec2(640, 360), 300);
+	m_physicsScene->addActor(plane);
 
 	ball1->applyForce(glm::vec2(180, 0));
 	ball2->applyForce(glm::vec2(-90, 0));

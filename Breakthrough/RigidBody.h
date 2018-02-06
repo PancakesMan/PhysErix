@@ -16,6 +16,7 @@ public:
 
 	virtual glm::vec2 getPosition() { return m_position; }
 	virtual glm::vec2 getVelocity() { return m_velocity; }
+	virtual void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	float getRotation() { return m_rotation; }
 	virtual float getMass() { return m_mass; }
 

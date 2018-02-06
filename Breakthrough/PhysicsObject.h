@@ -4,9 +4,11 @@
 
 enum ShapeType { 
 	PLANE = 0,
-	COMPOSITE,
 	SPHERE, 
-	BOX
+
+	SHAPE_COUNT,
+	BOX,
+	COMPOSITE
 };
 
 namespace aie {
