@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Input.h"
 #include "Sphere.h"
+#include "CompositeObject.h"
 
 BreakthroughApp::BreakthroughApp() {
 
@@ -30,6 +31,12 @@ bool BreakthroughApp::startup() {
 	Sphere* ball2 = new Sphere(glm::vec2(600, 250), glm::vec2(0, 0), 3.0f, 10, glm::vec4(1, 0, 0, 1));
 	m_physicsScene->addActor(ball1);
 	m_physicsScene->addActor(ball2);
+
+	CompositeObject* snowman = new CompositeObject();
+	snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
+	snowman->addComponent(new Sphere(glm::vec2(700, 275), glm::vec2(0, 0), 5.0f, 15, glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->addActor(snowman);
+	snowman->applyForce(glm::vec2(50, 0));
 
 	ball1->applyForce(glm::vec2(90, 0));
 	ball2->applyForce(glm::vec2(-45, 0));

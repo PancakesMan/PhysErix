@@ -3,7 +3,8 @@
 #include <glm\vec4.hpp>
 
 enum ShapeType { 
-	PLANE = 0, 
+	PLANE = 0,
+	COMPOSITE,
 	SPHERE, 
 	BOX
 };
