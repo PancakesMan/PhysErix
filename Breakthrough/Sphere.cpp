@@ -24,5 +24,15 @@ void Sphere::draw(aie::Renderer2D* renderer)
 bool Sphere::checkCollision(PhysicsObject* pOther)
 {
 	Sphere* other = dynamic_cast<Sphere*>(pOther);
-	return other != nullptr && glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
+	if (other == nullptr) return false;
+
+	switch (other->getShapeID())
+	{
+		case ShapeType::SPHERE:
+			return glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
+			break;
+		default:
+			return false;
+			break;
+	}
 }
