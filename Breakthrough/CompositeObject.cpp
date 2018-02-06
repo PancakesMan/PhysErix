@@ -16,6 +16,16 @@ void CompositeObject::fixedUpdate(glm::vec2 gravity, float timeStep)
 		rb->fixedUpdate(gravity, timeStep);
 }
 
+glm::vec2 CompositeObject::getPosition()
+{
+	return m_components.front()->getPosition();
+}
+
+glm::vec2 CompositeObject::getVelocity()
+{
+	return m_components.front()->getVelocity();
+}
+
 float CompositeObject::getMass()
 {
 	float mass = 0.0f;
@@ -34,6 +44,13 @@ void CompositeObject::applyForce(glm::vec2 force)
 {
 	for (RigidBody* rb : m_components)
 		rb->applyForce(force);
+}
+
+void CompositeObject::applyForceToActor(RigidBody* actor2, glm::vec2 force)
+{
+	actor2->applyForce(force);
+	for(RigidBody* rb : m_components)
+		rb->applyForce(-force);
 }
 
 bool CompositeObject::checkCollision(PhysicsObject* other)
