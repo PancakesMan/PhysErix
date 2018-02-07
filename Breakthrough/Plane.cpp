@@ -27,7 +27,7 @@ void Plane::debug()
 
 void Plane::draw(aie::Renderer2D * renderer)
 {
-	float lineSegmentLength = 300;
+	float lineSegmentLength = 300000;
 	glm::vec2 centerPoint = m_normal * m_distanceToOrigin;
 	glm::vec2 parallel(m_normal.y, - m_normal.x);
 
@@ -35,7 +35,7 @@ void Plane::draw(aie::Renderer2D * renderer)
 	glm::vec2 end = centerPoint - (parallel * lineSegmentLength);
 
 	renderer->setRenderColour(m_colour.r, m_colour.g, m_colour.b, m_colour.a);
-	renderer->drawLine(start.x, start.y, end.x, end.y, 2.0f);
+	renderer->drawLine(start.x, start.y, end.x, end.y);
 }
 
 void Plane::resetPosition()

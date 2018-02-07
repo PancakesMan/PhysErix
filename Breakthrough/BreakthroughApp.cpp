@@ -25,7 +25,7 @@ bool BreakthroughApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, 0));
+	m_physicsScene->setGravity(glm::vec2(0, -9.8f));
 	m_physicsScene->setTimeStep(0.01f);
 
 	Sphere* ball1 = new Sphere(glm::vec2(500, 250), glm::vec2(0, 0), 3.0f, 10, glm::vec4(1, 0, 0, 1));
@@ -39,7 +39,7 @@ bool BreakthroughApp::startup() {
 	//m_physicsScene->addActor(snowman);
 	//snowman->applyForce(glm::vec2(50, 0));
 
-	Plane* plane = new Plane(glm::vec2(1, 0), 300);
+	Plane* plane = new Plane(glm::vec2(1, 5), 300);
 	m_physicsScene->addActor(plane);
 
 	ball1->applyForce(glm::vec2(0, -50));
