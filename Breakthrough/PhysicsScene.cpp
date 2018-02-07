@@ -122,7 +122,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		float intersection = sphere->getRadius() - sphereToPlane;
 		if (intersection > 0)
 		{
-			sphere->applyForce(sphere->getVelocity());
+			sphere->setVelocity(glm::vec2(0, 0));
 			return true;
 		}
 	}

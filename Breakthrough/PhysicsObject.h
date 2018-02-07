@@ -5,7 +5,6 @@
 enum ShapeType { 
 	PLANE = 0,
 	SPHERE, 
-
 	SHAPE_COUNT,
 	BOX,
 	COMPOSITE

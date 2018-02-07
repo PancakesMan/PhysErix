@@ -39,10 +39,10 @@ bool BreakthroughApp::startup() {
 	//m_physicsScene->addActor(snowman);
 	//snowman->applyForce(glm::vec2(50, 0));
 
-	Plane* plane = new Plane(glm::vec2(1, 1), 100);
+	Plane* plane = new Plane(glm::vec2(1, 0), 300);
 	m_physicsScene->addActor(plane);
 
-	ball1->applyForce(glm::vec2(180, 0));
+	ball1->applyForce(glm::vec2(0, -50));
 	ball2->applyForce(glm::vec2(-90, 0));
 
 	return true;
