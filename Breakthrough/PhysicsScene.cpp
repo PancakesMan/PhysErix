@@ -5,13 +5,15 @@
 #include "RigidBody.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere,
-	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
+	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
+	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0,0))
@@ -103,6 +105,11 @@ bool PhysicsScene::plane2Sphere(PhysicsObject*, PhysicsObject*)
 	return false;
 }
 
+bool PhysicsScene::plane2Box(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
 bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 {
 	Sphere* sphere = dynamic_cast<Sphere*>(lhs);
@@ -144,5 +151,41 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 			return true;
 		}
 	}
+	return false;
+}
+
+bool PhysicsScene::sphere2Box(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::box2Plane(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::box2Sphere(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
+{
+	Box* box1 = dynamic_cast<Box*>(lhs);
+	Box* box2 = dynamic_cast<Box*>(rhs);
+
+	if (box1 != nullptr && box2 != nullptr)
+	{
+		if (box1->getPosition().x + box1->getWidth() / 2 > box2->getPosition().x - box2->getWidth() / 2
+			&& box1->getPosition().x - box1->getWidth() / 2 < box2->getPosition().x + box2->getWidth() / 2
+			&& box1->getPosition().y + box1->getHeight() / 2 > box2->getPosition().y - box2->getHeight() / 2
+			&& box1->getPosition().y - box1->getHeight() / 2 < box2->getPosition().y + box2->getHeight() / 2)
+		{
+			box1->setVelocity(glm::vec2(0, 0));
+			box2->setVelocity(glm::vec2(0, 0));
+			return true;
+		}
+	}
+
 	return false;
 }
