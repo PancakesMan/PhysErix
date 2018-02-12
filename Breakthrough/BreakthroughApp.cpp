@@ -116,7 +116,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
-		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, glm::vec4(1, 0, 0, 1)));
+		m_physicsScene->addActor(new Box(pos, mPos - pos, 1.0f, 15, 15, 0, glm::vec4(1, 0, 0, 1)));
 		count++;
 	}
 }

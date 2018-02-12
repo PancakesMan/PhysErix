@@ -174,8 +174,9 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			Box* sphereBox = new Box(spherePos, glm::vec2(), 0.0f, sphere->getRadius() * 2, sphere->getRadius() * 2, 0.0f, glm::vec4());
 			if (box2Box(sphereBox, rhs) == true)
 			{
-				box->setVelocity(glm::vec2());
-				sphere->setVelocity(glm::vec2());
+				//box->setVelocity(glm::vec2());
+				//sphere->setVelocity(glm::vec2());
+				sphere->resolveCollision(box);
 				return true;
 			}
 		}
@@ -195,8 +196,9 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (spherePos.y > boxPos.y + boxHalfHeight)
 				if (glm::distance(corners[TopLeft], spherePos) < sphereRadius)
 				{
-					box->setVelocity(glm::vec2());
-					sphere->setVelocity(glm::vec2());
+					//box->setVelocity(glm::vec2());
+					//sphere->setVelocity(glm::vec2());
+					sphere->resolveCollision(box);
 					return true;
 				}
 
@@ -204,8 +206,9 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (spherePos.y < boxPos.y - boxHalfHeight)
 				if (glm::distance(corners[BottomLeft], spherePos) < sphereRadius)
 				{
-					box->setVelocity(glm::vec2());
-					sphere->setVelocity(glm::vec2());
+					//box->setVelocity(glm::vec2());
+					//sphere->setVelocity(glm::vec2());
+					sphere->resolveCollision(box);
 					return true;
 				}
 		}
@@ -217,8 +220,9 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (spherePos.y > boxPos.y + boxHalfHeight)
 				if (glm::distance(corners[TopRight], spherePos) < sphereRadius)
 				{
-					box->setVelocity(glm::vec2());
-					sphere->setVelocity(glm::vec2());
+					//box->setVelocity(glm::vec2());
+					//sphere->setVelocity(glm::vec2());
+					sphere->resolveCollision(box);
 					return true;
 				}
 
@@ -226,8 +230,9 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (spherePos.y < boxPos.y - boxHalfHeight)
 				if (glm::distance(corners[BottomRight], spherePos) < sphereRadius)
 				{
-					box->setVelocity(glm::vec2());
-					sphere->setVelocity(glm::vec2());
+					//box->setVelocity(glm::vec2());
+					//sphere->setVelocity(glm::vec2());
+					sphere->resolveCollision(box);
 					return true;
 				}
 		}
@@ -266,6 +271,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (pointToPlane < 0)
 			{
 				box->setVelocity(glm::vec2(0, 0));
+				//plane->resolveCollision(box);
 				return true;
 			}
 		}
@@ -293,6 +299,7 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		{
 			box1->setVelocity(glm::vec2(0, 0));
 			box2->setVelocity(glm::vec2(0, 0));
+			//box1->resolveCollision(box2);
 			return true;
 		}
 	}
