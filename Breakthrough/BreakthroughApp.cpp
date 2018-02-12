@@ -32,21 +32,21 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
+	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
+	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	m_physicsScene->addActor(ball1);
 	m_physicsScene->addActor(ball2);
 	m_physicsScene->addActor(ball3);
 	m_physicsScene->addActor(ball4);
 
-	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 0, 0, 1));
-	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(0, 1, 0, 1));
-	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(0, 0, 1, 1));
-	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 0, 1, 1));
-	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 1, 0, 1));
-	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 1, 0, 1));
+	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 0, 0, 1));
+	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(0, 1, 0, 1));
+	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(0, 0, 1, 1));
+	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 0, 1, 1));
+	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 1, 0, 1));
+	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 1, 0, 1));
 
 	//m_physicsScene->addActor(centerBox);
 	//m_physicsScene->addActor(leftBox);
@@ -116,7 +116,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
-		m_physicsScene->addActor(new Box(pos, mPos - pos, 1.0f, 15, 15, 0, glm::vec4(1, 0, 0, 1)));
+		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, 0.f, glm::vec4(1, 0, 0, 1)));
 		count++;
 	}
 }
@@ -137,7 +137,8 @@ void BreakthroughApp::draw() {
 
 	if (creating)
 	{
-		m_2dRenderer->drawCircle(pos.x, pos.y, 25);
+		m_2dRenderer->setRenderColour(1, 1, 1, 1);
+		m_2dRenderer->drawCircle(pos.x, pos.y, 15);
 		m_2dRenderer->drawLine(pos.x, pos.y, mPos.x, mPos.y);
 	}
 

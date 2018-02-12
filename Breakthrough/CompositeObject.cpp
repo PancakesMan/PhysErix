@@ -1,6 +1,6 @@
 #include "CompositeObject.h"
 
-CompositeObject::CompositeObject() : RigidBody(COMPOSITE, glm::vec2(0,0), glm::vec2(0,0), 0, 0)
+CompositeObject::CompositeObject() : RigidBody(COMPOSITE, glm::vec2(0,0), glm::vec2(0,0), 0, 0, 0)
 {
 }
 

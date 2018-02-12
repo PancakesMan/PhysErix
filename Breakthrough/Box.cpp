@@ -2,8 +2,8 @@
 
 #include "Box.h"
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, int width, int height, float rotation, glm::vec4 colour) :
-	RigidBody(ShapeType::BOX, position, velocity, rotation, mass), m_width(width), m_height(height)
+Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, int width, int height, float rotation, float elasticity, glm::vec4 colour) :
+	RigidBody(ShapeType::BOX, position, velocity, rotation, mass, elasticity), m_width(width), m_height(height)
 {
 	m_colour = colour;
 }

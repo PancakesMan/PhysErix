@@ -171,7 +171,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		if ((spherePos.x > boxPos.x - boxHalfWidth && spherePos.x < boxPos.x + boxHalfWidth)
 			|| (spherePos.y > boxPos.y - boxHalfHeight && spherePos.y < boxPos.y + boxHalfHeight))
 		{
-			Box* sphereBox = new Box(spherePos, glm::vec2(), 0.0f, sphere->getRadius() * 2, sphere->getRadius() * 2, 0.0f, glm::vec4());
+			Box* sphereBox = new Box(spherePos, glm::vec2(), 0.0f, sphere->getRadius() * 2, sphere->getRadius() * 2, 0.0f, sphere->getElasticity(), glm::vec4());
 			if (box2Box(sphereBox, rhs) == true)
 			{
 				//box->setVelocity(glm::vec2());
@@ -270,8 +270,8 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 
 			if (pointToPlane < 0)
 			{
-				box->setVelocity(glm::vec2(0, 0));
-				//plane->resolveCollision(box);
+				//box->setVelocity(glm::vec2(0, 0));
+				plane->resolveCollision(box);
 				return true;
 			}
 		}
@@ -297,9 +297,9 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			&& box1->getPosition().y + box1->getHeight() / 2 > box2->getPosition().y - box2->getHeight() / 2
 			&& box1->getPosition().y - box1->getHeight() / 2 < box2->getPosition().y + box2->getHeight() / 2)
 		{
-			box1->setVelocity(glm::vec2(0, 0));
-			box2->setVelocity(glm::vec2(0, 0));
-			//box1->resolveCollision(box2);
+			//box1->setVelocity(glm::vec2(0, 0));
+			//box2->setVelocity(glm::vec2(0, 0));
+			box1->resolveCollision(box2);
 			return true;
 		}
 	}
