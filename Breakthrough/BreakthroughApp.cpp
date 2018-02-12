@@ -61,7 +61,7 @@ bool BreakthroughApp::startup() {
 	leftBox->applyForce(glm::vec2(20, 0));
 	rightBox->applyForce(glm::vec2(-20, 0));
 	aboveBox->applyForce(glm::vec2(0, -20));
-	belowBox->applyForce(glm::vec2(0, 20));
+	belowBox->applyForce(glm::vec2(0, -20));
 
 	return true;
 }

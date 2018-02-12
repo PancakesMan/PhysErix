@@ -159,8 +159,39 @@ bool PhysicsScene::sphere2Box(PhysicsObject*, PhysicsObject*)
 	return false;
 }
 
-bool PhysicsScene::box2Plane(PhysicsObject*, PhysicsObject*)
+bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	Box* box = dynamic_cast<Box*>(lhs);
+	Plane* plane = dynamic_cast<Plane*>(rhs);
+
+	if (box != nullptr && plane != nullptr)
+	{
+		glm::vec2 corners[] = {
+			glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
+			glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
+			glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2),
+			glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2)
+		};
+
+		for (auto pt : corners)
+		{
+			glm::vec2 collisionNormal = plane->getNormal();
+			float pointToPlane = glm::dot(pt, plane->getNormal()) - plane->getDistance();
+
+			if (pointToPlane < 0)
+			{
+				collisionNormal *= -1;
+				pointToPlane *= -1;
+			}
+
+			if ((1 - pointToPlane) > 0)
+			{
+				box->setVelocity(glm::vec2(0, 0));
+				return true;
+			}
+		}
+	}
+
 	return false;
 }
 
