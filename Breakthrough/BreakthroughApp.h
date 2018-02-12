@@ -22,4 +22,9 @@ protected:
 	aie::Font*			m_font;
 
 	PhysicsScene*       m_physicsScene;
+
+	glm::vec2 pos, vel, mPos;
+	bool creating = false;
+
+	int count = 0;
 };

@@ -127,7 +127,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		}
 
 		float intersection = sphere->getRadius() - sphereToPlane;
-		if (intersection > 0)
+		if (intersection > 0 && glm::dot(collisionNormal, sphere->getVelocity()) < 0)
 		{
 			plane->resolveCollision(sphere);
 			return true;

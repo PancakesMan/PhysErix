@@ -1,4 +1,5 @@
 #include <glm\ext.hpp>
+#include <time.h>
 
 #include "BreakthroughApp.h"
 #include "Texture.h"
@@ -10,7 +11,9 @@
 #include "CompositeObject.h"
 
 BreakthroughApp::BreakthroughApp() {
-
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < 50; i++)
+		rand();
 }
 
 BreakthroughApp::~BreakthroughApp() {
@@ -29,10 +32,10 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Sphere* ball1 = new Sphere(glm::vec2(500, 250), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(600, 300), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball3 = new Sphere(glm::vec2(700, 350), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
-	Sphere* ball4 = new Sphere(glm::vec2(800, 400), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
 	m_physicsScene->addActor(ball1);
 	m_physicsScene->addActor(ball2);
 	m_physicsScene->addActor(ball3);
@@ -96,6 +99,26 @@ void BreakthroughApp::update(float deltaTime) {
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
+
+	if (input->wasMouseButtonPressed(0))
+	{
+		creating = true;
+		pos.x = input->getMouseX();
+		pos.y = input->getMouseY();
+	}
+
+	if (input->isMouseButtonDown(0))
+	{
+		mPos.x = input->getMouseX();
+		mPos.y = input->getMouseY();
+	}
+
+	if (input->wasMouseButtonReleased(0))
+	{
+		creating = false;
+		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, glm::vec4(1, 0, 0, 1)));
+		count++;
+	}
 }
 
 void BreakthroughApp::draw() {
@@ -110,7 +133,13 @@ void BreakthroughApp::draw() {
 	m_physicsScene->draw(m_2dRenderer);
 	
 	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+	m_2dRenderer->drawText(m_font, std::to_string(count).c_str(), 0, 5);
+
+	if (creating)
+	{
+		m_2dRenderer->drawCircle(pos.x, pos.y, 25);
+		m_2dRenderer->drawLine(pos.x, pos.y, mPos.x, mPos.y);
+	}
 
 	// done drawing sprites
 	m_2dRenderer->end();
