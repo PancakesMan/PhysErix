@@ -5,6 +5,8 @@ namespace aie {
 	class Renderer2D;
 }
 
+class RigidBody;
+
 class Plane : public PhysicsObject
 {
 public:
@@ -16,6 +18,7 @@ public:
 	virtual void debug();
 	virtual void draw(aie::Renderer2D* renderer);
 	virtual void resetPosition();
+	void resolveCollision(RigidBody* actor);
 
 	glm::vec2 getNormal() { return m_normal; }
 	float getDistance() { return m_distanceToOrigin; }

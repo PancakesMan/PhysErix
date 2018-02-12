@@ -26,13 +26,17 @@ bool BreakthroughApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, 0));
+	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Sphere* ball1 = new Sphere(glm::vec2(500, 250), glm::vec2(0, 0), 3.0f, 10, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 3.0f, 10, glm::vec4(1, 0, 0, 1));
-	//m_physicsScene->addActor(ball1);
+	Sphere* ball1 = new Sphere(glm::vec2(500, 250), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(600, 300), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball3 = new Sphere(glm::vec2(700, 350), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	Sphere* ball4 = new Sphere(glm::vec2(800, 400), glm::vec2(0, 0), 3.0f, 25, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->addActor(ball1);
 	m_physicsScene->addActor(ball2);
+	m_physicsScene->addActor(ball3);
+	m_physicsScene->addActor(ball4);
 
 	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 0, 0, 1));
 	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(0, 1, 0, 1));
@@ -41,12 +45,12 @@ bool BreakthroughApp::startup() {
 	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 1, 0, 1));
 	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, glm::vec4(1, 1, 0, 1));
 
-	m_physicsScene->addActor(centerBox);
-	m_physicsScene->addActor(leftBox);
-	m_physicsScene->addActor(rightBox);
-	m_physicsScene->addActor(aboveBox);
-	m_physicsScene->addActor(belowBox);
-	m_physicsScene->addActor(belowBox2);
+	//m_physicsScene->addActor(centerBox);
+	//m_physicsScene->addActor(leftBox);
+	//m_physicsScene->addActor(rightBox);
+	//m_physicsScene->addActor(aboveBox);
+	//m_physicsScene->addActor(belowBox);
+	//m_physicsScene->addActor(belowBox2);
 
 	//CompositeObject* snowman = new CompositeObject();
 	//snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
@@ -54,11 +58,18 @@ bool BreakthroughApp::startup() {
 	//m_physicsScene->addActor(snowman);
 	//snowman->applyForce(glm::vec2(50, 0));
 
-	Plane* plane = new Plane(glm::vec2(1, 5), 300);
-	m_physicsScene->addActor(plane);
+	Plane* plane = new Plane(glm::vec2(1, 0), 50);
+	Plane* plane2 = new Plane(glm::vec2(1, 0), getWindowWidth() - 50);
+	Plane* plane3 = new Plane(glm::vec2(0, 1), 50);
+	Plane* plane4 = new Plane(glm::vec2(0, 1), getWindowHeight() - 50);
 
-	ball1->applyForce(glm::vec2(0, -50));
-	ball2->applyForce(glm::vec2(-70, 0));
+	m_physicsScene->addActor(plane);
+	m_physicsScene->addActor(plane2);
+	m_physicsScene->addActor(plane3);
+	m_physicsScene->addActor(plane4);
+
+	ball1->applyForce(glm::vec2(0, -20));
+	ball2->applyForce(glm::vec2(-270, 0));
 
 	leftBox->applyForce(glm::vec2(20, 0));
 	rightBox->applyForce(glm::vec2(-20, 0));

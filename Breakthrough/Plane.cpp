@@ -2,6 +2,7 @@
 #include <glm\glm.hpp>
 
 #include "Plane.h"
+#include "RigidBody.h"
 
 Plane::Plane() : Plane(glm::vec2(0,1), 0)
 {
@@ -40,4 +41,13 @@ void Plane::draw(aie::Renderer2D * renderer)
 
 void Plane::resetPosition()
 {
+}
+
+void Plane::resolveCollision(RigidBody* actor)
+{
+	float elasticity = 1;
+	float j = glm::dot(-(1 + elasticity) * actor->getVelocity(), m_normal) / (1 / actor->getMass());
+
+	glm::vec2 force = m_normal * j;
+	actor->applyForce(force);
 }

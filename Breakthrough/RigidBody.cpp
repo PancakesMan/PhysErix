@@ -1,3 +1,5 @@
+#include <glm\glm.hpp>
+
 #include "RigidBody.h"
 
 RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass) :
@@ -28,4 +30,19 @@ void RigidBody::applyForceToActor(RigidBody* actor2, glm::vec2 force)
 {
 	actor2->applyForce(force);
 	applyForce(-force);
+}
+
+void RigidBody::resolveCollision(RigidBody* other)
+{
+	glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
+	glm::vec2 relativeVelocity = other->getVelocity() - m_velocity;
+
+	if (glm::dot(normal, relativeVelocity) > 0)
+		return;
+
+	float elasticity = 1;
+	float j = glm::dot(-(1 + elasticity) * relativeVelocity, normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->getMass())));
+
+	glm::vec2 force = normal * j;
+	applyForceToActor(other, force);
 }
