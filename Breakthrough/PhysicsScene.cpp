@@ -189,7 +189,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (localPos.x < 0 && localPos.x > -(hw + sphere->getRadius())) {
 				numContacts++;
 				contact += glm::vec2(-hw, localPos.y);
-				direction = new glm::vec2(box->getLocalX());
+				direction = new glm::vec2(-box->getLocalX());
 			}
 		}
 		if (localPos.x < hw && localPos.x > -hw) {
@@ -201,7 +201,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			if (localPos.y < 0 && localPos.y > -(hh + sphere->getRadius())) {
 				numContacts++;
 				contact += glm::vec2(localPos.x, -hh);
-				direction = new glm::vec2(box->getLocalY());
+				direction = new glm::vec2(-box->getLocalY());
 			}
 		}
 

@@ -2,7 +2,7 @@
 #include "PhysicsObject.h"
 
 const float MIN_LINEAR_THRESHOLD = 0.1f;
-const float MIN_ROTATION_THRESHOLD = 0.01f;
+const float MIN_ROTATION_THRESHOLD = 0.1f;
 
 class RigidBody : public PhysicsObject
 {
