@@ -58,8 +58,8 @@ void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2*
 	float r1 = glm::dot(contact - m_position, -perp);
 	float r2 = glm::dot(contact - other->getPosition(), perp);
 
-	float v1 = glm::dot(m_velocity, normal) - r1 * m_rotation;
-	float v2 = glm::dot(other->m_velocity, normal) + r2 * other->getRotation();
+	float v1 = glm::dot(m_velocity, normal) - r1 * m_angularVelocity;
+	float v2 = glm::dot(other->m_velocity, normal) + r2 * other->getAngularVelocity();
 
 	if (v1 > v2)
 	{
