@@ -29,7 +29,7 @@ bool BreakthroughApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, 0));
+	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
 	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
@@ -116,7 +116,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
-		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, 0.8f, glm::vec4(1, 0, 0, 1)));
+		m_physicsScene->addActor(new Box(pos, mPos - pos, 1.0f, 25, 25, 0, 0.8f, glm::vec4(1, 0, 0, 1))); //Sphere(pos, mPos - pos, 1.0f, 15, 0.8f, glm::vec4(1, 0, 0, 1))
 		count++;
 	}
 }

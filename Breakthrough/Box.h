@@ -11,8 +11,9 @@ public:
 	virtual bool checkCollision(PhysicsObject* pOther);
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 
-	int getWidth() { return m_width; }
-	int getHeight() { return m_height; }
+	int getWidth() const { return m_width; }
+	int getHeight() const { return m_height; }
+	bool checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal);
 	glm::vec2 getLocalX() { return m_localX; }
 	glm::vec2 getLocalY() { return m_localY; }
 

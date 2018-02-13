@@ -211,83 +211,6 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		}
 
 		delete direction;
-
-		//glm::vec2 spherePos = sphere->getPosition();
-		//float sphereRadius = sphere->getRadius();
-
-		//glm::vec2 boxPos = box->getPosition();
-		//float boxHalfWidth = box->getWidth() / 2;
-		//float boxHalfHeight = box->getHeight() / 2;
-
-		//// Check AABB edges
-		//if ((spherePos.x > boxPos.x - boxHalfWidth && spherePos.x < boxPos.x + boxHalfWidth)
-		//	|| (spherePos.y > boxPos.y - boxHalfHeight && spherePos.y < boxPos.y + boxHalfHeight))
-		//{
-		//	Box* sphereBox = new Box(spherePos, glm::vec2(), 0.0f, sphere->getRadius() * 2, sphere->getRadius() * 2, 0.0f, sphere->getElasticity(), glm::vec4());
-		//	if (box2Box(sphereBox, rhs) == true)
-		//	{
-		//		//box->setVelocity(glm::vec2());
-		//		//sphere->setVelocity(glm::vec2());
-		//		//sphere->resolveCollision(box);
-		//		return true;
-		//	}
-		//}
-
-		//enum Corners { TopLeft = 0, TopRight, BottomLeft, BottomRight};
-		//glm::vec2 corners[] = {
-		//	glm::vec2(boxPos.x - boxHalfWidth, boxPos.y + boxHalfHeight),
-		//	glm::vec2(boxPos.x + boxHalfWidth, boxPos.y + boxHalfHeight),
-		//	glm::vec2(boxPos.x - boxHalfWidth, boxPos.y - boxHalfHeight),
-		//	glm::vec2(boxPos.x + boxHalfWidth, boxPos.y - boxHalfHeight)
-		//};
-
-		//// Check left-hand corners
-		//if (spherePos.x < boxPos.x - boxHalfWidth)
-		//{
-		//	// Top Left Corner
-		//	if (spherePos.y > boxPos.y + boxHalfHeight)
-		//		if (glm::distance(corners[TopLeft], spherePos) < sphereRadius)
-		//		{
-		//			//box->setVelocity(glm::vec2());
-		//			//sphere->setVelocity(glm::vec2());
-		//			//sphere->resolveCollision(box);
-		//			return true;
-		//		}
-
-		//	// Bottom Left Corner
-		//	if (spherePos.y < boxPos.y - boxHalfHeight)
-		//		if (glm::distance(corners[BottomLeft], spherePos) < sphereRadius)
-		//		{
-		//			//box->setVelocity(glm::vec2());
-		//			//sphere->setVelocity(glm::vec2());
-		//			//sphere->resolveCollision(box);
-		//			return true;
-		//		}
-		//}
-
-		//// Check right-hand corners
-		//if (spherePos.x > boxPos.x + boxHalfWidth)
-		//{
-		//	// Top Right Corner
-		//	if (spherePos.y > boxPos.y + boxHalfHeight)
-		//		if (glm::distance(corners[TopRight], spherePos) < sphereRadius)
-		//		{
-		//			//box->setVelocity(glm::vec2());
-		//			//sphere->setVelocity(glm::vec2());
-		//			//sphere->resolveCollision(box);
-		//			return true;
-		//		}
-
-		//	// Bottom Right Corner
-		//	if (spherePos.y < boxPos.y - boxHalfHeight)
-		//		if (glm::distance(corners[BottomRight], spherePos) < sphereRadius)
-		//		{
-		//			//box->setVelocity(glm::vec2());
-		//			//sphere->setVelocity(glm::vec2());
-		//			//sphere->resolveCollision(box);
-		//			return true;
-		//		}
-		//}
 	}
 
 	return false;
@@ -300,34 +223,6 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 
 	if (box != nullptr && plane != nullptr)
 	{
-		//glm::vec2 corners[] = {
-		//	glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
-		//	glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
-		//	glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2),
-		//	glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2)
-		//};
-
-		//float centreToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
-
-		//for (auto pt : corners)
-		//{
-		//	glm::vec2 collisionNormal = plane->getNormal();
-		//	float pointToPlane = glm::dot(pt, plane->getNormal()) - plane->getDistance();
-
-		//	if (centreToPlane < 0)
-		//	{
-		//		collisionNormal *= -1;
-		//		pointToPlane *= -1;
-		//	}
-
-		//	if (pointToPlane < 0)
-		//	{
-		//		//box->setVelocity(glm::vec2(0, 0));
-		//		//plane->resolveCollision(box);
-		//		return true;
-		//	}
-		//}
-
 		int numContacts = 0;
 		glm::vec2 contact(0, 0);
 		float contactV = 0;
@@ -381,16 +276,19 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 
 	if (box1 != nullptr && box2 != nullptr)
 	{
-		if (box1->getPosition().x + box1->getWidth() / 2 > box2->getPosition().x - box2->getWidth() / 2
-			&& box1->getPosition().x - box1->getWidth() / 2 < box2->getPosition().x + box2->getWidth() / 2
-			&& box1->getPosition().y + box1->getHeight() / 2 > box2->getPosition().y - box2->getHeight() / 2
-			&& box1->getPosition().y - box1->getHeight() / 2 < box2->getPosition().y + box2->getHeight() / 2)
-		{
-			//box1->setVelocity(glm::vec2(0, 0));
-			//box2->setVelocity(glm::vec2(0, 0));
-			//box1->resolveCollision(box2);
-			return true;
-		}
+		glm::vec2 boxPos = box2->getPosition() - box1->getPosition();
+
+		glm::vec2 norm(0, 0), contact(0, 0);
+		float pen = 0;
+		int numContacts = 0;
+
+		box1->checkBoxCorners(*box2, contact, numContacts, pen, norm);
+		if (box2->checkBoxCorners(*box1, contact, numContacts, pen, norm))
+			norm = -norm;
+
+		if (pen > 0)
+			box1->resolveCollision(box2, contact / (float)numContacts, &norm);
+		return true;
 	}
 
 	return false;
