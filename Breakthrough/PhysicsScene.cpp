@@ -129,7 +129,8 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		float intersection = sphere->getRadius() - sphereToPlane;
 		if (intersection > 0 && glm::dot(collisionNormal, sphere->getVelocity()) < 0)
 		{
-			plane->resolveCollision(sphere);
+			glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
+			plane->resolveCollision(sphere, contact);
 			return true;
 		}
 	}
@@ -146,7 +147,7 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 	{
 		if (glm::distance(sphere1->getPosition(), sphere2->getPosition()) < sphere1->getRadius() + sphere2->getRadius())
 		{
-			sphere1->resolveCollision(sphere2);
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
 		}
 	}
@@ -176,7 +177,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			{
 				//box->setVelocity(glm::vec2());
 				//sphere->setVelocity(glm::vec2());
-				sphere->resolveCollision(box);
+				//sphere->resolveCollision(box);
 				return true;
 			}
 		}
@@ -198,7 +199,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 				{
 					//box->setVelocity(glm::vec2());
 					//sphere->setVelocity(glm::vec2());
-					sphere->resolveCollision(box);
+					//sphere->resolveCollision(box);
 					return true;
 				}
 
@@ -208,7 +209,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 				{
 					//box->setVelocity(glm::vec2());
 					//sphere->setVelocity(glm::vec2());
-					sphere->resolveCollision(box);
+					//sphere->resolveCollision(box);
 					return true;
 				}
 		}
@@ -222,7 +223,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 				{
 					//box->setVelocity(glm::vec2());
 					//sphere->setVelocity(glm::vec2());
-					sphere->resolveCollision(box);
+					//sphere->resolveCollision(box);
 					return true;
 				}
 
@@ -232,7 +233,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 				{
 					//box->setVelocity(glm::vec2());
 					//sphere->setVelocity(glm::vec2());
-					sphere->resolveCollision(box);
+					//sphere->resolveCollision(box);
 					return true;
 				}
 		}
@@ -248,32 +249,69 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 
 	if (box != nullptr && plane != nullptr)
 	{
-		glm::vec2 corners[] = {
-			glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
-			glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
-			glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2),
-			glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2)
-		};
+		//glm::vec2 corners[] = {
+		//	glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
+		//	glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y + box->getHeight() / 2),
+		//	glm::vec2(box->getPosition().x - box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2),
+		//	glm::vec2(box->getPosition().x + box->getWidth() / 2, box->getPosition().y - box->getHeight() / 2)
+		//};
 
-		float centreToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
+		//float centreToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
 
-		for (auto pt : corners)
+		//for (auto pt : corners)
+		//{
+		//	glm::vec2 collisionNormal = plane->getNormal();
+		//	float pointToPlane = glm::dot(pt, plane->getNormal()) - plane->getDistance();
+
+		//	if (centreToPlane < 0)
+		//	{
+		//		collisionNormal *= -1;
+		//		pointToPlane *= -1;
+		//	}
+
+		//	if (pointToPlane < 0)
+		//	{
+		//		//box->setVelocity(glm::vec2(0, 0));
+		//		//plane->resolveCollision(box);
+		//		return true;
+		//	}
+		//}
+
+		int numContacts = 0;
+		glm::vec2 contact(0, 0);
+		float contactV = 0;
+		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
+
+		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
+		float comFromPlane = glm::dot(box->getPosition() - planeOrigin, plane->getNormal());
+
+		for (float x = -box->getWidth() / 2; x < box->getWidth(); x += box->getWidth())
 		{
-			glm::vec2 collisionNormal = plane->getNormal();
-			float pointToPlane = glm::dot(pt, plane->getNormal()) - plane->getDistance();
-
-			if (centreToPlane < 0)
+			for (float y = -box->getHeight() / 2; y < box->getHeight(); y += box->getHeight())
 			{
-				collisionNormal *= -1;
-				pointToPlane *= -1;
-			}
+				glm::vec2 p = box->getPosition() + x * box->getLocalX() + y * box->getLocalY();
+				float distFromPlane = glm::dot(p - planeOrigin, plane->getNormal());
 
-			if (pointToPlane < 0)
-			{
-				//box->setVelocity(glm::vec2(0, 0));
-				plane->resolveCollision(box);
-				return true;
+				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getAngularVelocity() * (-y * box->getLocalX() + x * box->getLocalY()), plane->getNormal());
+
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0)
+					|| (distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
+				{
+					numContacts++;
+					contact += p;
+					contactV += velocityIntoPlane;
+				}
 			}
+		}
+
+		if (numContacts > 0)
+		{
+			float collisionV = contactV / (float)numContacts;
+			glm::vec2 acceleration = -plane->getNormal() * ((1.0f + box->getElasticity()) * collisionV);
+			glm::vec2 localContact = (contact / (float)numContacts) - box->getPosition();
+			float r = glm::dot(localContact, glm::vec2(plane->getNormal().y, -plane->getNormal().x));
+			float m0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
+			box->applyForce(acceleration * m0, localContact);
 		}
 	}
 
@@ -299,7 +337,7 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		{
 			//box1->setVelocity(glm::vec2(0, 0));
 			//box2->setVelocity(glm::vec2(0, 0));
-			box1->resolveCollision(box2);
+			//box1->resolveCollision(box2);
 			return true;
 		}
 	}

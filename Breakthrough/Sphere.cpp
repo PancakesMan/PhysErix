@@ -9,6 +9,7 @@ Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius,
 {
 	m_radius = radius;
 	m_colour = colour;
+	m_moment = 0.5f * m_mass * m_radius * m_radius;
 }
 
 Sphere::~Sphere()
@@ -19,6 +20,10 @@ void Sphere::draw(aie::Renderer2D* renderer)
 {
 	renderer->setRenderColour(m_colour.r, m_colour.g, m_colour.b, m_colour.a);
 	renderer->drawCircle(m_position.x, m_position.y, m_radius);
+
+	glm::vec2 end = glm::vec2(std::cos(m_rotation), std::sin(m_rotation)) * m_radius;
+	renderer->setRenderColour(1, 1, 1, 1);
+	renderer->drawLine(m_position.x, m_position.y, m_position.x + end.x, m_position.y + end.y);
 }
 
 bool Sphere::checkCollision(PhysicsObject* pOther)

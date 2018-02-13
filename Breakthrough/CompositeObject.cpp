@@ -42,15 +42,15 @@ void CompositeObject::draw(aie::Renderer2D* renderer)
 
 void CompositeObject::applyForce(glm::vec2 force)
 {
-	for (RigidBody* rb : m_components)
-		rb->applyForce(force);
+	for (RigidBody* rb : m_components);
+		//rb->applyForce(force);
 }
 
 void CompositeObject::applyForceToActor(RigidBody* actor2, glm::vec2 force)
 {
-	actor2->applyForce(force);
-	for(RigidBody* rb : m_components)
-		rb->applyForce(-force);
+//	actor2->applyForce(force);
+	for (RigidBody* rb : m_components);
+		//rb->applyForce(-force);
 }
 
 bool CompositeObject::checkCollision(PhysicsObject* other)

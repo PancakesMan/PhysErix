@@ -9,10 +9,14 @@ public:
 
 	virtual void draw(aie::Renderer2D* renderer);
 	virtual bool checkCollision(PhysicsObject* pOther);
+	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 
 	int getWidth() { return m_width; }
 	int getHeight() { return m_height; }
+	glm::vec2 getLocalX() { return m_localX; }
+	glm::vec2 getLocalY() { return m_localY; }
 
 private:
 	int m_width, m_height;
+	glm::vec2 m_localX, m_localY;
 };

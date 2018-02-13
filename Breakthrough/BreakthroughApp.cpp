@@ -36,24 +36,24 @@ bool BreakthroughApp::startup() {
 	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->addActor(ball1);
-	m_physicsScene->addActor(ball2);
-	m_physicsScene->addActor(ball3);
-	m_physicsScene->addActor(ball4);
+	//m_physicsScene->addActor(ball1);
+	//m_physicsScene->addActor(ball2);
+	//m_physicsScene->addActor(ball3);
+	//m_physicsScene->addActor(ball4);
 
-	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 0, 0, 1));
-	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(0, 1, 0, 1));
-	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(0, 0, 1, 1));
-	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 0, 1, 1));
-	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 1, 0, 1));
-	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 0.2f, glm::vec4(1, 1, 0, 1));
+	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(1, 0, 0, 1));
+	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(0, 1, 0, 1));
+	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(0, 0, 1, 1));
+	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(1, 0, 1, 1));
+	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(1, 1, 0, 1));
+	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 20, 20, 0.0f, 1, glm::vec4(1, 1, 0, 1));
 
-	//m_physicsScene->addActor(centerBox);
-	//m_physicsScene->addActor(leftBox);
-	//m_physicsScene->addActor(rightBox);
-	//m_physicsScene->addActor(aboveBox);
-	//m_physicsScene->addActor(belowBox);
-	//m_physicsScene->addActor(belowBox2);
+	m_physicsScene->addActor(centerBox);
+	m_physicsScene->addActor(leftBox);
+	m_physicsScene->addActor(rightBox);
+	m_physicsScene->addActor(aboveBox);
+	m_physicsScene->addActor(belowBox);
+	m_physicsScene->addActor(belowBox2);
 
 	//CompositeObject* snowman = new CompositeObject();
 	//snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
@@ -71,14 +71,14 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->addActor(plane3);
 	m_physicsScene->addActor(plane4);
 
-	ball1->applyForce(glm::vec2(0, -20));
-	ball2->applyForce(glm::vec2(-270, 0));
+	ball1->applyForce(glm::vec2(0, -20), glm::vec2(20,0));
+	ball2->applyForce(glm::vec2(-270, 0), glm::vec2(20, 0));
 
-	leftBox->applyForce(glm::vec2(20, 0));
-	rightBox->applyForce(glm::vec2(-20, 0));
-	aboveBox->applyForce(glm::vec2(0, -20));
-	belowBox->applyForce(glm::vec2(0, -20));
-	belowBox2->applyForce(glm::vec2(0, 20));
+	leftBox->applyForce(glm::vec2(20, 0), glm::vec2(20, 0));
+	rightBox->applyForce(glm::vec2(-20, 0), glm::vec2(20, 0));
+	aboveBox->applyForce(glm::vec2(0, -20), glm::vec2(20, 0));
+	belowBox->applyForce(glm::vec2(0, -20), glm::vec2(20, 0));
+	belowBox2->applyForce(glm::vec2(0, 20), glm::vec2(20, 0));
 
 	return true;
 }
