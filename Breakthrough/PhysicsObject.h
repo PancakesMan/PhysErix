@@ -24,6 +24,7 @@ public:
 	virtual void debug() = 0;
 	virtual void draw(aie::Renderer2D* renderer) = 0;
 	virtual void resetPosition() {};
+	virtual float getTotalEnergy(glm::vec2 gravity) { return 0; }
 	
 	ShapeType getShapeID() { return m_shapeID; }
 	glm::vec4 getColour() { return m_colour; }

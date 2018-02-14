@@ -77,6 +77,14 @@ void PhysicsScene::draw(aie::Renderer2D* renderer)
 		pActor->draw(renderer);
 }
 
+float PhysicsScene::getTotalEnergy()
+{
+	float total = 0.0f;
+	for (auto actor : m_actors)
+		total += actor->getTotalEnergy(m_gravity);
+	return total;
+}
+
 void PhysicsScene::checkForCollision()
 {
 	for (auto it = m_actors.begin(); it != std::prev(m_actors.end()); it++)

@@ -133,7 +133,7 @@ void BreakthroughApp::draw() {
 	m_physicsScene->draw(m_2dRenderer);
 	
 	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, std::to_string(count).c_str(), 0, 5);
+	m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
 
 	if (creating)
 	{

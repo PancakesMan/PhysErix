@@ -26,6 +26,7 @@ public:
 	float getElasticity() { return m_elasticity; }
 	float getMoment() { return m_moment; }
 	float getAngularVelocity() { return m_angularVelocity; }
+	float getTotalEnergy(glm::vec2 gravity);
 
 protected:
 	glm::vec2 m_position, m_velocity;

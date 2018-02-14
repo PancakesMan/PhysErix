@@ -24,6 +24,7 @@ public:
 
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 	float getTimeStep() const { return m_timeStep; }
+	float getTotalEnergy();
 
 	void checkForCollision();
 

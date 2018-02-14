@@ -83,3 +83,12 @@ void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2*
 	glm::vec2 force = normal * j;
 	applyForceToActor(other, force);*/
 }
+
+float RigidBody::getTotalEnergy(glm::vec2 gravity)
+{
+	float eLinear = 0.5f * m_mass * glm::dot(m_velocity, m_velocity);
+	float eRotational = 0.5f * m_moment * m_angularVelocity * m_angularVelocity;
+	float eGravity = -m_mass * glm::dot(m_position, gravity);
+
+	return eLinear + eRotational + eGravity;
+}
