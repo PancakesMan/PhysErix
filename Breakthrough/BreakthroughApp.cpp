@@ -178,9 +178,9 @@ void BreakthroughApp::execute(std::string& command)
 	aie::Input* input = aie::Input::getInstance();
 	std::vector<std::string> commandParams = split(command, ' ');
 	
-	if (commandParams[0] == "create")
+	if (commandParams.size() > 0 && commandParams[0] == "create")
 	{
-		if (commandParams[1] == "sphere")
+		if (commandParams.size() > 1 && commandParams[1] == "sphere")
 		{
 			glm::vec2 pos(0,0);
 			float radius = std::stoi(commandParams[2]);
@@ -198,7 +198,7 @@ void BreakthroughApp::execute(std::string& command)
 
 			m_physicsScene->addActor(new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1)));
 		}
-		else if (commandParams[1] == "box")
+		else if (commandParams.size() > 1 && commandParams[1] == "box")
 		{
 			//
 		}
