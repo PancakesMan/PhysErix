@@ -42,14 +42,14 @@ bool BreakthroughApp::startup() {
 	//m_physicsScene->addActor(ball3);
 	//m_physicsScene->addActor(ball4);
 
-	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
-	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
-	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
-	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
-	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
-	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
+	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 
-	//m_physicsScene->addActor(centerBox);
+	m_physicsScene->addActor(centerBox);
 	/*m_physicsScene->addActor(leftBox);
 	m_physicsScene->addActor(rightBox);
 	m_physicsScene->addActor(aboveBox);
@@ -68,9 +68,9 @@ bool BreakthroughApp::startup() {
 	Plane* plane4 = new Plane(glm::vec2(0, 1), getWindowHeight() - 50);
 
 	m_physicsScene->addActor(plane);
-	m_physicsScene->addActor(plane2);
-	m_physicsScene->addActor(plane3);
-	m_physicsScene->addActor(plane4);
+	//m_physicsScene->addActor(plane2);
+	//m_physicsScene->addActor(plane3);
+	//m_physicsScene->addActor(plane4);
 
 	ball1->applyForce(glm::vec2(0, -20), glm::vec2(20,0));
 	ball2->applyForce(glm::vec2(-270, 0), glm::vec2(20, 0));
@@ -247,6 +247,21 @@ void BreakthroughApp::execute(std::string& command)
 			}
 
 			m_physicsScene->addActor(new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1)));
+		}
+		else if (commandParams.size() > 1 && commandParams[1] == "plane")
+		{
+			if (commandParams[2] == "vertical")
+			{
+				glm::vec2 normal(1, 0);
+				if (commandParams[3] == "mouse")
+					m_physicsScene->addActor(new Plane(normal, input->getMouseX() + m_cameraX));
+			}
+			else if (commandParams[2] == "horizontal")
+			{
+				glm::vec2 normal(0, 1);
+				if (commandParams[3] == "mouse")
+					m_physicsScene->addActor(new Plane(normal, input->getMouseY() + m_cameraY));
+			}
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")

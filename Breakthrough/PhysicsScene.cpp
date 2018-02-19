@@ -248,6 +248,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		glm::vec2 contact(0, 0);
 		float contactV = 0;
 		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
+		float penetration = 0;
 
 		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
 		float comFromPlane = glm::dot(box->getPosition() - planeOrigin, plane->getNormal());
@@ -261,12 +262,21 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 
 				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getAngularVelocity() * (-y * box->getLocalX() + x * box->getLocalY()), plane->getNormal());
 
-				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0)
-					|| (distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane >= 0)
+					|| (distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane <= 0))
 				{
 					numContacts++;
 					contact += p;
 					contactV += velocityIntoPlane;
+
+					if (comFromPlane >= 0) {
+						if (penetration > distFromPlane)
+							penetration = distFromPlane;
+					}
+					else {
+						if (penetration < distFromPlane)
+							penetration = distFromPlane;
+					}
 				}
 			}
 		}
@@ -279,6 +289,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 			float r = glm::dot(localContact, glm::vec2(plane->getNormal().y, -plane->getNormal().x));
 			float m0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
 			box->applyForce(acceleration * m0, localContact);
+			box->setPosition(box->getPosition() - plane->getNormal() * penetration);
 		}
 	}
 
