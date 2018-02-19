@@ -1,5 +1,6 @@
 #include <glm\ext.hpp>
 #include <time.h>
+#include <iostream>
 
 #include "BreakthroughApp.h"
 #include "Texture.h"
@@ -209,7 +210,7 @@ void BreakthroughApp::execute(std::string& command)
 		if (commandParams.size() > 1 && commandParams[1] == "sphere")
 		{
 			glm::vec2 pos(0, 0);
-			float radius = std::stoi(commandParams[2]);
+			float radius = std::stof(commandParams[2]);
 
 			if (commandParams[3] == "mouse")
 			{
@@ -218,8 +219,8 @@ void BreakthroughApp::execute(std::string& command)
 			}
 			else
 			{
-				pos.x = std::stoi(commandParams[3]) + x;
-				pos.y = std::stoi(commandParams[4]) + y;
+				pos.x = std::stof(commandParams[3]) + x;
+				pos.y = std::stof(commandParams[4]) + y;
 			}
 
 			m_physicsScene->addActor(new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1)));
@@ -234,16 +235,16 @@ void BreakthroughApp::execute(std::string& command)
 				pos.x = input->getMouseX() + x;
 				pos.y = input->getMouseY() + y;
 
-				width = std::stoi(commandParams[3]);
-				height = std::stoi(commandParams[4]);
+				width = std::stof(commandParams[3]);
+				height = std::stof(commandParams[4]);
 			}
 			else
 			{
-				pos.x = std::stoi(commandParams[2]) + x;
-				pos.y = std::stoi(commandParams[3]) + y;
+				pos.x = std::stof(commandParams[2]) + x;
+				pos.y = std::stof(commandParams[3]) + y;
 
-				width = std::stoi(commandParams[4]);
-				height = std::stoi(commandParams[5]);
+				width = std::stof(commandParams[4]);
+				height = std::stof(commandParams[5]);
 			}
 
 			m_physicsScene->addActor(new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1)));
@@ -283,8 +284,8 @@ void BreakthroughApp::execute(std::string& command)
 		}
 		else if (commandParams.size() == 3)
 		{
-			m_cameraX = std::stoi(commandParams[1]);
-			m_cameraY = std::stoi(commandParams[2]);
+			m_cameraX = std::stof(commandParams[1]);
+			m_cameraY = std::stof(commandParams[2]);
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "clear")
@@ -293,18 +294,21 @@ void BreakthroughApp::execute(std::string& command)
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "mlct")
 	{
+		PhysicsObject* lastCreated = m_physicsScene->getLastActor();
+		RigidBody* rigid; Plane* plane;
+
+		rigid = dynamic_cast<RigidBody*>(lastCreated);
+		if (rigid == nullptr)
+			plane = dynamic_cast<Plane*>(lastCreated);
+
 		if (commandParams.size() > 1 && commandParams[1] == "mouse")
 		{
 			float x = input->getMouseX(), y = input->getMouseY();
 
-			PhysicsObject* lastCreated = m_physicsScene->getLastActor();
-
-			RigidBody* rigid = dynamic_cast<RigidBody*>(lastCreated);
 			if (rigid != nullptr)
 				rigid->setPosition(glm::vec2(x + m_cameraX, y + m_cameraY));
 			else
 			{
-				Plane* plane = dynamic_cast<Plane*>(lastCreated);
 				if (plane != nullptr) {
 					glm::vec2 verticalNormal(1, 0);
 					glm::vec2 horizontalNormal(0, 1);
@@ -314,6 +318,35 @@ void BreakthroughApp::execute(std::string& command)
 					else if (plane->getNormal() == horizontalNormal)
 						plane->setDistance(y + m_cameraY);
 				}
+			}
+		}
+		else if (commandParams.size() > 2)
+		{
+			float x = std::stof(commandParams[1]), y = std::stof(commandParams[2]);
+			if (rigid != nullptr)
+				rigid->setPosition(glm::vec2(x + m_cameraX, y + m_cameraY));
+			else if (plane != nullptr)
+			{
+				glm::vec2 verticalNormal(1, 0);
+				glm::vec2 horizontalNormal(0, 1);
+
+				if (plane->getNormal() == verticalNormal)
+					plane->setDistance(x + m_cameraX);
+				else if (plane->getNormal() == horizontalNormal)
+					plane->setDistance(y + m_cameraY);
+			}
+		}
+	}
+	else if (commandParams.size() > 0 && commandParams[0] == "setgrav")
+	{
+		if (commandParams.size() > 2)
+		{
+			m_physicsScene->setGravity(glm::vec2(std::stof(commandParams[1]), std::stof(commandParams[2])));
+			for (auto actor : m_physicsScene->getActors())
+			{
+				RigidBody* rb = dynamic_cast<RigidBody*>(actor);
+				if (rb != nullptr)
+					rb->setVelocity(glm::vec2(0, 0));
 			}
 		}
 	}
