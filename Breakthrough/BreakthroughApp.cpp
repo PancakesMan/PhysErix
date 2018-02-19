@@ -68,9 +68,9 @@ bool BreakthroughApp::startup() {
 	Plane* plane4 = new Plane(glm::vec2(0, 1), getWindowHeight() - 50);
 
 	m_physicsScene->addActor(plane);
-	//m_physicsScene->addActor(plane2);
-	//m_physicsScene->addActor(plane3);
-	//m_physicsScene->addActor(plane4);
+	m_physicsScene->addActor(plane2);
+	m_physicsScene->addActor(plane3);
+	m_physicsScene->addActor(plane4);
 
 	ball1->applyForce(glm::vec2(0, -20), glm::vec2(20,0));
 	ball2->applyForce(glm::vec2(-270, 0), glm::vec2(20, 0));
@@ -263,6 +263,16 @@ void BreakthroughApp::execute(std::string& command)
 					m_physicsScene->addActor(new Plane(normal, input->getMouseY() + m_cameraY));
 			}
 		}
+		else if (commandParams.size() > 1 && commandParams[1] == "borders")
+		{
+			glm::vec2 vertical(1, 0);
+			glm::vec2 horizontal(0, 1);
+
+			m_physicsScene->addActor(new Plane(vertical, 0));
+			m_physicsScene->addActor(new Plane(vertical, getWindowWidth()));
+			m_physicsScene->addActor(new Plane(horizontal, 0));
+			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight()));
+		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
 	{
@@ -278,7 +288,35 @@ void BreakthroughApp::execute(std::string& command)
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "clear")
+	{
 		m_physicsScene->clearActors();
+	}
+	else if (commandParams.size() > 0 && commandParams[0] == "mlct")
+	{
+		if (commandParams.size() > 1 && commandParams[1] == "mouse")
+		{
+			float x = input->getMouseX(), y = input->getMouseY();
+
+			PhysicsObject* lastCreated = m_physicsScene->getLastActor();
+
+			RigidBody* rigid = dynamic_cast<RigidBody*>(lastCreated);
+			if (rigid != nullptr)
+				rigid->setPosition(glm::vec2(x + m_cameraX, y + m_cameraY));
+			else
+			{
+				Plane* plane = dynamic_cast<Plane*>(lastCreated);
+				if (plane != nullptr) {
+					glm::vec2 verticalNormal(1, 0);
+					glm::vec2 horizontalNormal(0, 1);
+
+					if (plane->getNormal() == verticalNormal)
+						plane->setDistance(x + m_cameraX);
+					else if (plane->getNormal() == horizontalNormal)
+						plane->setDistance(y + m_cameraY);
+				}
+			}
+		}
+	}
 
 	lastUsedCommand = command;
 	command = "";

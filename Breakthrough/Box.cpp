@@ -90,8 +90,8 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 		}
 	}
 
-	if (maxX < -m_width / 2 || minX > m_width / 2 ||
-		maxY < -m_height / 2 || minY > m_height / 2)
+	if (maxX <= -m_width / 2 || minX >= m_width / 2 ||
+		maxY <= -m_height / 2 || minY >= m_height / 2)
 		return false;
 
 	if (!numLocalContacts)

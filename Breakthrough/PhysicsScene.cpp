@@ -318,9 +318,15 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		if (box2->checkBoxCorners(*box1, contact, numContacts, pen, norm))
 			norm = -norm;
 
-		if (pen > 0)
+		if (pen > 0) {
 			box1->resolveCollision(box2, contact / (float)numContacts, &norm);
-		return true;
+
+			glm::vec2 displacement = pen * norm;
+			box1->setPosition(box1->getPosition() - displacement * 0.5f);
+			box2->setPosition(box2->getPosition() + displacement * 0.5f);
+
+			return true;
+		}
 	}
 
 	return false;

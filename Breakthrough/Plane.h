@@ -22,6 +22,7 @@ public:
 
 	glm::vec2 getNormal() { return m_normal; }
 	float getDistance() { return m_distanceToOrigin; }
+	void setDistance(float distance) { m_distanceToOrigin = distance; }
 
 protected:
 	glm::vec2 m_normal;
