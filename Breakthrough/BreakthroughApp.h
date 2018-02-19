@@ -18,6 +18,7 @@ public:
 	virtual void draw();
 
 protected:
+	float m_cameraX, m_cameraY;
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;

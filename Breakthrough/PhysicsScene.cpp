@@ -87,6 +87,8 @@ float PhysicsScene::getTotalEnergy()
 
 void PhysicsScene::checkForCollision()
 {
+	if (m_actors.size() == 0) return;
+
 	for (auto it = m_actors.begin(); it != std::prev(m_actors.end()); it++)
 		for (auto it2 = std::next(it); it2 != m_actors.end(); it2++)
 		{

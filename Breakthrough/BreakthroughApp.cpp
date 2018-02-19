@@ -23,6 +23,7 @@ BreakthroughApp::~BreakthroughApp() {
 bool BreakthroughApp::startup() {
 
 	m_2dRenderer = new aie::Renderer2D();
+	m_cameraX = m_cameraY = 0;
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
@@ -48,7 +49,7 @@ bool BreakthroughApp::startup() {
 	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
 	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 1, glm::vec4(1, 1, 1, 1));
 
-	m_physicsScene->addActor(centerBox);
+	//m_physicsScene->addActor(centerBox);
 	/*m_physicsScene->addActor(leftBox);
 	m_physicsScene->addActor(rightBox);
 	m_physicsScene->addActor(aboveBox);
@@ -93,9 +94,23 @@ void BreakthroughApp::update(float deltaTime) {
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
+	m_2dRenderer->setCameraPos(m_cameraX, m_cameraY);
 
-	if (!paused)
+	if (!paused) {
 		m_physicsScene->update(deltaTime);
+
+		if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+			m_cameraX -= 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+			m_cameraX += 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_UP))
+			m_cameraY += 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+			m_cameraY -= 2;
+	}
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -104,14 +119,20 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonPressed(0))
 	{
 		creating = true;
-		pos.x = input->getMouseX();
-		pos.y = input->getMouseY();
+		float x, y;
+		m_2dRenderer->getCameraPos(x, y);
+
+		pos.x = input->getMouseX() + x;
+		pos.y = input->getMouseY() + y;
 	}
 
 	if (input->isMouseButtonDown(0))
 	{
-		mPos.x = input->getMouseX();
-		mPos.y = input->getMouseY();
+		float x, y;
+		m_2dRenderer->getCameraPos(x, y);
+
+		mPos.x = input->getMouseX() + x;
+		mPos.y = input->getMouseY() + y;
 	}
 
 	if (input->wasMouseButtonReleased(0))
@@ -156,11 +177,12 @@ void BreakthroughApp::draw() {
 	// output some text, uses the last used colour
 	//m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
 	if (paused) {
-		float length = m_font->getStringWidth(arrow.c_str());
+		float length = m_font->getStringWidth(arrow.c_str()), x, y;
+		m_2dRenderer->getCameraPos(x, y);
 
 		m_2dRenderer->setRenderColour(1, 1, 1, 1);
-		m_2dRenderer->drawText(m_font, arrow.c_str(), 50, 10);
-		m_2dRenderer->drawText(m_font, command.c_str(), 55 + length, 10);
+		m_2dRenderer->drawText(m_font, arrow.c_str(), x + 50, y + 10);
+		m_2dRenderer->drawText(m_font, command.c_str(), x + 55 + length, y + 10);
 	}
 
 	if (creating)
@@ -176,6 +198,9 @@ void BreakthroughApp::draw() {
 
 void BreakthroughApp::execute(std::string& command)
 {
+	float x, y;
+	m_2dRenderer->getCameraPos(x, y);
+
 	aie::Input* input = aie::Input::getInstance();
 	std::vector<std::string> commandParams = split(command, ' ');
 	
@@ -183,18 +208,18 @@ void BreakthroughApp::execute(std::string& command)
 	{
 		if (commandParams.size() > 1 && commandParams[1] == "sphere")
 		{
-			glm::vec2 pos(0,0);
+			glm::vec2 pos(0, 0);
 			float radius = std::stoi(commandParams[2]);
 
 			if (commandParams[3] == "mouse")
 			{
-				pos.x = input->getMouseX();
-				pos.y = input->getMouseY();
+				pos.x = input->getMouseX() + x;
+				pos.y = input->getMouseY() + y;
 			}
 			else
 			{
-				pos.x = std::stoi(commandParams[3]);
-				pos.y = std::stoi(commandParams[4]);
+				pos.x = std::stoi(commandParams[3]) + x;
+				pos.y = std::stoi(commandParams[4]) + y;
 			}
 
 			m_physicsScene->addActor(new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1)));
@@ -206,16 +231,16 @@ void BreakthroughApp::execute(std::string& command)
 
 			if (commandParams[2] == "mouse")
 			{
-				pos.x = input->getMouseX();
-				pos.y = input->getMouseY();
+				pos.x = input->getMouseX() + x;
+				pos.y = input->getMouseY() + y;
 
 				width = std::stoi(commandParams[3]);
 				height = std::stoi(commandParams[4]);
 			}
 			else
 			{
-				pos.x = std::stoi(commandParams[2]);
-				pos.y = std::stoi(commandParams[3]);
+				pos.x = std::stoi(commandParams[2]) + x;
+				pos.y = std::stoi(commandParams[3]) + y;
 
 				width = std::stoi(commandParams[4]);
 				height = std::stoi(commandParams[5]);
@@ -224,6 +249,21 @@ void BreakthroughApp::execute(std::string& command)
 			m_physicsScene->addActor(new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1)));
 		}
 	}
+	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
+	{
+		if (commandParams.size() == 2)
+		{
+			if (commandParams[1] == "origin")
+				m_cameraX = m_cameraY = 0;
+		}
+		else if (commandParams.size() == 3)
+		{
+			m_cameraX = std::stoi(commandParams[1]);
+			m_cameraY = std::stoi(commandParams[2]);
+		}
+	}
+	else if (commandParams.size() > 0 && commandParams[0] == "clear")
+		m_physicsScene->clearActors();
 
 	lastUsedCommand = command;
 	command = "";
