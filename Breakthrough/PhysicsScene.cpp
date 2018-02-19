@@ -139,6 +139,9 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		{
 			glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 			plane->resolveCollision(sphere, contact);
+
+			sphere->setPosition(sphere->getPosition() + collisionNormal * intersection);
+
 			return true;
 		}
 	}
@@ -153,8 +156,16 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
-		if (glm::distance(sphere1->getPosition(), sphere2->getPosition()) < sphere1->getRadius() + sphere2->getRadius())
+		glm::vec2 delta = sphere2->getPosition() - sphere1->getPosition();
+		float distance = glm::length(delta);
+		float intersection = sphere1->getRadius() + sphere2->getRadius() - distance;
+
+		if (intersection > 0)
 		{
+			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() + sphere2->getRadius())) * delta / distance;
+			sphere1->setPosition(sphere1->getPosition() + contactForce);
+			sphere2->setPosition(sphere2->getPosition() - contactForce);
+
 			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
 		}

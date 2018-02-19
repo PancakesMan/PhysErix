@@ -94,7 +94,8 @@ void BreakthroughApp::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	m_physicsScene->update(deltaTime);
+	if (!paused)
+		m_physicsScene->update(deltaTime);
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -116,8 +117,28 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
-		m_physicsScene->addActor(new Box(pos, mPos - pos, 1.0f, 25, 25, 0, 0.8f, glm::vec4(1, 0, 0, 1))); //Sphere(pos, mPos - pos, 1.0f, 15, 0.8f, glm::vec4(1, 0, 0, 1))
+		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, 0.8f, glm::vec4(1, 0, 0, 1))); //Box(pos, mPos - pos, 1.0f, 25, 25, 0, 0.8f, glm::vec4(1, 0, 0, 1))
 		count++;
+	}
+
+	if (input->wasKeyPressed(aie::INPUT_KEY_GRAVE_ACCENT))
+	{
+		paused = !paused;
+		command = "";
+	}
+
+	if (paused) {
+		if (input->wasKeyPressed(aie::INPUT_KEY_ENTER))
+			execute(command);
+
+		if (input->wasKeyPressed(aie::INPUT_KEY_BACKSPACE))
+			command = command.substr(0, command.length() - 1);
+
+		if (input->wasKeyPressed(aie::INPUT_KEY_UP))
+			command = lastUsedCommand;
+
+		for (auto c : input->getPressedCharacters())
+			command += (char)c;
 	}
 }
 
@@ -133,7 +154,13 @@ void BreakthroughApp::draw() {
 	m_physicsScene->draw(m_2dRenderer);
 	
 	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
+	//m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
+	if (paused) {
+		float length = m_font->getStringWidth(arrow.c_str());
+		m_2dRenderer->drawText(m_font, arrow.c_str(), 50, 10);
+
+		m_2dRenderer->drawText(m_font, command.c_str(), 55 + length, 10);
+	}
 
 	if (creating)
 	{
@@ -144,4 +171,59 @@ void BreakthroughApp::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+void BreakthroughApp::execute(std::string& command)
+{
+	aie::Input* input = aie::Input::getInstance();
+	std::vector<std::string> commandParams = split(command, ' ');
+	
+	if (commandParams[0] == "create")
+	{
+		if (commandParams[1] == "sphere")
+		{
+			glm::vec2 pos(0,0);
+			float radius = std::stoi(commandParams[2]);
+
+			if (commandParams[3] == "mouse")
+			{
+				pos.x = input->getMouseX();
+				pos.y = input->getMouseY();
+			}
+			else
+			{
+				pos.x = std::stoi(commandParams[3]);
+				pos.y = std::stoi(commandParams[4]);
+			}
+
+			m_physicsScene->addActor(new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1)));
+		}
+		else if (commandParams[1] == "box")
+		{
+			//
+		}
+	}
+
+	lastUsedCommand = command;
+	command = "";
+}
+
+std::vector<std::string> BreakthroughApp::split(const std::string string, char delim)
+{
+	std::string tmp = "";
+	std::vector<std::string> ret;
+
+	for (char c : string)
+	{
+		if (c != delim)
+			tmp += c;
+		else {
+			if (tmp.length() > 0)
+				ret.push_back(tmp);
+			tmp.clear();
+		}
+	}
+	ret.push_back(tmp);
+
+	return ret;
 }

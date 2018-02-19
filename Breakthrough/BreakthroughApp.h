@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 #include "Application.h"
 #include "Renderer2D.h"
@@ -24,7 +25,13 @@ protected:
 	PhysicsScene*       m_physicsScene;
 
 	glm::vec2 pos, vel, mPos;
-	bool creating = false;
+	bool creating = false, paused = false;
+	std::string command, lastUsedCommand;
+	const std::string arrow = "> ";
 
 	int count = 0;
+
+private:
+	void execute(std::string& command);
+	std::vector<std::string> split(const std::string string, char delim);
 };

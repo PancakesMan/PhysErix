@@ -19,6 +19,7 @@ public:
 	void resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
 	virtual glm::vec2 getPosition() { return m_position; }
+	void setPosition(glm::vec2 position) { m_position = position; }
 	virtual glm::vec2 getVelocity() { return m_velocity; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	float getRotation() { return m_rotation; }
