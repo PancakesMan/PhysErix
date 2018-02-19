@@ -157,8 +157,9 @@ void BreakthroughApp::draw() {
 	//m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
 	if (paused) {
 		float length = m_font->getStringWidth(arrow.c_str());
-		m_2dRenderer->drawText(m_font, arrow.c_str(), 50, 10);
 
+		m_2dRenderer->setRenderColour(1, 1, 1, 1);
+		m_2dRenderer->drawText(m_font, arrow.c_str(), 50, 10);
 		m_2dRenderer->drawText(m_font, command.c_str(), 55 + length, 10);
 	}
 
@@ -200,7 +201,27 @@ void BreakthroughApp::execute(std::string& command)
 		}
 		else if (commandParams.size() > 1 && commandParams[1] == "box")
 		{
-			//
+			glm::vec2 pos(0, 0);
+			float width, height;
+
+			if (commandParams[2] == "mouse")
+			{
+				pos.x = input->getMouseX();
+				pos.y = input->getMouseY();
+
+				width = std::stoi(commandParams[3]);
+				height = std::stoi(commandParams[4]);
+			}
+			else
+			{
+				pos.x = std::stoi(commandParams[2]);
+				pos.y = std::stoi(commandParams[3]);
+
+				width = std::stoi(commandParams[4]);
+				height = std::stoi(commandParams[5]);
+			}
+
+			m_physicsScene->addActor(new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1)));
 		}
 	}
 
