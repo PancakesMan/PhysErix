@@ -29,7 +29,8 @@ protected:
 	bool creating = false, paused = false;
 	std::string command, lastUsedCommand;
 	const std::string arrow = "> ";
-
+	const float cd = 0.12f;
+	float timeout = 0.0f;
 	int count = 0;
 
 private:

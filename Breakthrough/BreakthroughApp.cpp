@@ -97,22 +97,6 @@ void BreakthroughApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 	m_2dRenderer->setCameraPos(m_cameraX, m_cameraY);
 
-	if (!paused) {
-		m_physicsScene->update(deltaTime);
-
-		if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-			m_cameraX -= 2;
-
-		if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-			m_cameraX += 2;
-
-		if (input->isKeyDown(aie::INPUT_KEY_UP))
-			m_cameraY += 2;
-
-		if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-			m_cameraY -= 2;
-	}
-
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
@@ -150,17 +134,39 @@ void BreakthroughApp::update(float deltaTime) {
 	}
 
 	if (paused) {
+		timeout += deltaTime;
+
 		if (input->wasKeyPressed(aie::INPUT_KEY_ENTER))
 			execute(command);
 
-		if (input->wasKeyPressed(aie::INPUT_KEY_BACKSPACE))
+		if (timeout > cd && input->isKeyDown(aie::INPUT_KEY_BACKSPACE))
+		{
+			timeout = 0.0f;
 			command = command.substr(0, command.length() - 1);
+		}
 
 		if (input->wasKeyPressed(aie::INPUT_KEY_UP))
 			command = lastUsedCommand;
 
 		for (auto c : input->getPressedCharacters())
 			command += (char)c;
+	}
+
+	//update physics code
+	if (!paused) {
+		m_physicsScene->update(deltaTime);
+
+		if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+			m_cameraX -= 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+			m_cameraX += 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_UP))
+			m_cameraY += 2;
+
+		if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+			m_cameraY -= 2;
 	}
 }
 
