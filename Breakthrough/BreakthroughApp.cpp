@@ -269,10 +269,14 @@ void BreakthroughApp::execute(std::string& command)
 			glm::vec2 vertical(1, 0);
 			glm::vec2 horizontal(0, 1);
 
-			m_physicsScene->addActor(new Plane(vertical, 0));
-			m_physicsScene->addActor(new Plane(vertical, getWindowWidth()));
-			m_physicsScene->addActor(new Plane(horizontal, 0));
-			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight()));
+			float xOffset, yOffset;
+			if (commandParams.size() > 2)
+				xOffset = yOffset = std::stof(commandParams[2]);
+
+			m_physicsScene->addActor(new Plane(vertical, 0 + xOffset));
+			m_physicsScene->addActor(new Plane(vertical, getWindowWidth() - xOffset));
+			m_physicsScene->addActor(new Plane(horizontal, 0 + yOffset));
+			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight() - yOffset));
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
