@@ -152,8 +152,8 @@ void BreakthroughApp::update(float deltaTime) {
 		{
 			if (command.length() > 0 && command[command.length() - 1] != ' ')
 				command += " ";
-			command += std::to_string(input->getMouseX() + m_cameraX) + " ";
-			command += std::to_string(input->getMouseY() + m_cameraY) + " ";
+			command += std::to_string((int)input->getMouseX() + (int)m_cameraX) + " ";
+			command += std::to_string((int)input->getMouseY() + (int)m_cameraY) + " ";
 		}
 
 		for (auto c : input->getPressedCharacters())
@@ -198,6 +198,7 @@ void BreakthroughApp::draw() {
 		m_2dRenderer->setRenderColour(1, 1, 1, 1);
 		m_2dRenderer->drawText(m_font, arrow.c_str(), x + 50, y + 10);
 		m_2dRenderer->drawText(m_font, command.c_str(), x + 55 + length, y + 10);
+		m_2dRenderer->drawText(m_font, std::string("_").c_str(), x + 75 + m_font->getStringWidth(command.c_str()), y + 8);
 	}
 
 	if (creating)
@@ -283,14 +284,14 @@ void BreakthroughApp::execute(std::string& command)
 			glm::vec2 vertical(1, 0);
 			glm::vec2 horizontal(0, 1);
 
-			float xOffset, yOffset;
+			float xOffset = 0, yOffset = 0;
 			if (commandParams.size() > 2)
 				xOffset = yOffset = std::stof(commandParams[2]);
 
-			m_physicsScene->addActor(new Plane(vertical, 0 + xOffset));
-			m_physicsScene->addActor(new Plane(vertical, getWindowWidth() - xOffset));
-			m_physicsScene->addActor(new Plane(horizontal, 0 + yOffset));
-			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight() - yOffset));
+			m_physicsScene->addActor(new Plane(vertical, 0 + xOffset + m_cameraX));
+			m_physicsScene->addActor(new Plane(vertical, getWindowWidth() - xOffset + m_cameraX));
+			m_physicsScene->addActor(new Plane(horizontal, 0 + yOffset + m_cameraY));
+			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight() - yOffset + m_cameraY));
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
