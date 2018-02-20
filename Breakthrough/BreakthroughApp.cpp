@@ -148,6 +148,14 @@ void BreakthroughApp::update(float deltaTime) {
 		if (input->wasKeyPressed(aie::INPUT_KEY_UP))
 			command = lastUsedCommand;
 
+		if (input->wasKeyPressed(aie::INPUT_KEY_TAB))
+		{
+			if (command.length() > 0 && command[command.length() - 1] != ' ')
+				command += " ";
+			command += std::to_string(input->getMouseX() + m_cameraX) + " ";
+			command += std::to_string(input->getMouseY() + m_cameraY) + " ";
+		}
+
 		for (auto c : input->getPressedCharacters())
 			command += (char)c;
 	}
