@@ -2,7 +2,7 @@
 
 #include "RigidBody.h"
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity, float linearDrag, float angularDrag, bool isKinematic = false) :
+RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity, float linearDrag, float angularDrag, bool isKinematic) :
 	PhysicsObject(shapeID), m_position(position), m_velocity(velocity), m_rotation(rotation),
 	m_mass(mass), m_elasticity(elasticity), m_linearDrag(linearDrag), m_angularDrag(angularDrag), m_isKinematic(isKinematic), m_angularVelocity(0)
 {

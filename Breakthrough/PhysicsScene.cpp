@@ -171,9 +171,9 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 				sphere2->setPosition(sphere2->getPosition() - contactForce);
 			}
 			else if (!sphere1->isKinematic())
-				sphere1->setPosition(sphere1->getPosition() - contactForce * 2.f);
+				sphere1->setPosition(sphere1->getPosition() + contactForce * 2.f);
 			else
-				sphere2->setPosition(sphere2->getPosition() + contactForce * 2.f);
+				sphere2->setPosition(sphere2->getPosition() - contactForce * 2.f);
 
 			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
