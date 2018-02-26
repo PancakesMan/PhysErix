@@ -42,3 +42,7 @@ bool Sphere::checkCollision(PhysicsObject* pOther)
 			break;
 	}
 }
+
+bool Sphere::isInside(glm::vec2 point) {
+	return glm::distance(point, m_position) < m_radius;
+}

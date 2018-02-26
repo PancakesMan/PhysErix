@@ -9,6 +9,7 @@ public:
 
 	virtual void draw(aie::Renderer2D* renderer);
 	virtual bool checkCollision(PhysicsObject* pOther);
+	virtual bool isInside(glm::vec2 point);
 
 	float getRadius() { return m_radius; }
 

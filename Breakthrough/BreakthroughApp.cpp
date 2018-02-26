@@ -9,6 +9,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include "Spring.h"
 #include "CompositeObject.h"
 
 BreakthroughApp::BreakthroughApp() {
@@ -35,11 +36,10 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->setTimeStep(0.01f);
 
 	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
-	ball1->setKinematic(true);
 	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->addActor(ball1);
+	//m_physicsScene->addActor(ball1);
 	//m_physicsScene->addActor(ball2);
 	//m_physicsScene->addActor(ball3);
 	//m_physicsScene->addActor(ball4);
@@ -51,12 +51,16 @@ bool BreakthroughApp::startup() {
 	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 
-	m_physicsScene->addActor(centerBox);
-	/*m_physicsScene->addActor(leftBox);
+	leftBox->setKinematic(true);
+
+	//m_physicsScene->addActor(centerBox);
+	m_physicsScene->addActor(leftBox);
 	m_physicsScene->addActor(rightBox);
-	m_physicsScene->addActor(aboveBox);
-	m_physicsScene->addActor(belowBox);
-	m_physicsScene->addActor(belowBox2);*/
+	//m_physicsScene->addActor(aboveBox);
+	//m_physicsScene->addActor(belowBox);
+	//m_physicsScene->addActor(belowBox2);
+
+	m_physicsScene->addActor(new Spring(leftBox, rightBox, 120.0f, 1, 0.1));
 
 	//CompositeObject* snowman = new CompositeObject();
 	//snowman->addComponent(new Sphere(glm::vec2(700, 250), glm::vec2(0, 0), 5.0f, 20, glm::vec4(1, 1, 1, 1)));
@@ -304,6 +308,28 @@ void BreakthroughApp::execute(std::string& command)
 			m_physicsScene->addActor(new Plane(horizontal, 0 + yOffset + m_cameraY));
 			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight() - yOffset + m_cameraY));
 		}
+		else if (commandParams.size() > 1 && commandParams[1] == "spring")
+		{
+			glm::vec2 p1 = glm::vec2(std::stof(commandParams[2]), std::stof(commandParams[3]));
+			glm::vec2 p2 = glm::vec2(std::stof(commandParams[4]), std::stof(commandParams[5]));
+
+			RigidBody *obj1 = nullptr, *obj2 = nullptr;
+
+			for (PhysicsObject* obj : m_physicsScene->getActors())
+			{
+				RigidBody* rb = dynamic_cast<RigidBody*>(obj);
+				if (rb != nullptr)
+				{
+					if (rb->isInside(p1))
+						obj1 = rb;
+					else if (rb->isInside(p2))
+						obj2 = rb;
+				}
+			}
+
+			if (obj1 != nullptr && obj2 != nullptr && obj1 != obj2)
+				m_physicsScene->addActor(new Spring(obj1, obj2, 120, 1));
+		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
 	{
@@ -379,6 +405,15 @@ void BreakthroughApp::execute(std::string& command)
 					rb->setVelocity(glm::vec2(0, 0));
 			}
 		}
+	}
+	else if (commandParams.size() >= 4 && commandParams[0] == "setbackcolour")
+	{
+		float r, g, b;
+		r = std::stof(commandParams[1]);
+		g = std::stof(commandParams[2]);
+		b = std::stof(commandParams[3]);
+
+		setBackgroundColour(r, g, b);
 	}
 
 	lastUsedCommand = command;

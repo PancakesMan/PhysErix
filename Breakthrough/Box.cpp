@@ -59,6 +59,13 @@ void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 	m_localY = glm::normalize(glm::vec2(-sn, cs));
 }
 
+bool Box::isInside(glm::vec2 point) {
+	return point.x > m_position.x - m_width / 2
+		&& point.x < m_position.x + m_width / 2
+		&& point.y > m_position.y - m_height / 2
+		&& point.y < m_position.y + m_height / 2;
+}
+
 bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal)
 {
 	float minX, maxX, minY, maxY;

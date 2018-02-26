@@ -10,6 +10,7 @@ public:
 	virtual void draw(aie::Renderer2D* renderer);
 	virtual bool checkCollision(PhysicsObject* pOther);
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
+	virtual bool isInside(glm::vec2 point);
 
 	int getWidth() const { return m_width; }
 	int getHeight() const { return m_height; }
