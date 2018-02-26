@@ -165,8 +165,15 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 		if (intersection > 0)
 		{
 			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() + sphere2->getRadius())) * delta / distance;
-			sphere1->setPosition(sphere1->getPosition() + contactForce);
-			sphere2->setPosition(sphere2->getPosition() - contactForce);
+
+			if (!sphere1->isKinematic() && !sphere2->isKinematic()) {
+				sphere1->setPosition(sphere1->getPosition() + contactForce);
+				sphere2->setPosition(sphere2->getPosition() - contactForce);
+			}
+			else if (!sphere1->isKinematic())
+				sphere1->setPosition(sphere1->getPosition() - contactForce * 2.f);
+			else
+				sphere2->setPosition(sphere2->getPosition() + contactForce * 2.f);
 
 			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;

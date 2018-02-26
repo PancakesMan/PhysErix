@@ -35,10 +35,11 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->setTimeStep(0.01f);
 
 	Sphere* ball1 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
+	ball1->setKinematic(true);
 	Sphere* ball2 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball3 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
 	Sphere* ball4 = new Sphere(glm::vec2(getWindowWidth() * (rand() / (double)RAND_MAX), getWindowHeight() * (rand() / (double)RAND_MAX)), glm::vec2(0, 0), 3.0f, 25, 0.f, glm::vec4(1, 0, 0, 1));
-	//m_physicsScene->addActor(ball1);
+	m_physicsScene->addActor(ball1);
 	//m_physicsScene->addActor(ball2);
 	//m_physicsScene->addActor(ball3);
 	//m_physicsScene->addActor(ball4);

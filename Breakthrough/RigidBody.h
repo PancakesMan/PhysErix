@@ -18,12 +18,15 @@ public:
 	virtual bool checkCollision(PhysicsObject* pOther) = 0;
 	void resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
+	void setKinematic(bool state) { m_isKinematic = state; }
+	bool isKinematic() { return m_isKinematic; }
+
 	virtual glm::vec2 getPosition() { return m_position; }
 	void setPosition(glm::vec2 position) { m_position = position; }
 	virtual glm::vec2 getVelocity() { return m_velocity; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	float getRotation() { return m_rotation; }
-	virtual float getMass() { return m_mass; }
+	virtual float getMass() { return m_isKinematic ? INT_MAX : m_mass; }
 	float getElasticity() { return m_elasticity; }
 	float getMoment() { return m_moment; }
 	float getAngularVelocity() { return m_angularVelocity; }
