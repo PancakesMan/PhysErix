@@ -239,7 +239,12 @@ void BreakthroughApp::execute(std::string& command)
 				pos.y = std::stof(commandParams[4]) + y;
 			}
 
-			m_physicsScene->addActor(new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1)));
+			Sphere* sphere = new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1));
+
+			if (commandParams[commandParams.size() - 1] == "-k")
+				sphere->setKinematic(true);
+
+			m_physicsScene->addActor(sphere);
 		}
 		else if (commandParams.size() > 1 && commandParams[1] == "box")
 		{
@@ -263,7 +268,12 @@ void BreakthroughApp::execute(std::string& command)
 				height = std::stof(commandParams[5]);
 			}
 
-			m_physicsScene->addActor(new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1)));
+			Box* box = new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1));
+
+			if (commandParams[commandParams.size() - 1] == "-k")
+				box->setKinematic(true);
+
+			m_physicsScene->addActor(box);
 		}
 		else if (commandParams.size() > 1 && commandParams[1] == "plane")
 		{

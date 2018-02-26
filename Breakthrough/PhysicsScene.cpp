@@ -235,6 +235,19 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 
 		if (numContacts > 0) {
 			contact = box->getPosition() + (1.0f / numContacts) * (box->getLocalX() * contact.x + box->getLocalY() * contact.y);
+
+			float pen = sphere->getRadius() - glm::length(contact - sphere->getPosition());
+			glm::vec2 penVec = glm::normalize(contact - sphere->getPosition()) * pen;
+
+			if (!box->isKinematic() && !sphere->isKinematic()) {
+				box->setPosition(box->getPosition() + penVec * 0.5f);
+				sphere->setPosition(sphere->getPosition() - penVec * 0.5f);
+			}
+			else if (!box->isKinematic())
+				box->setPosition(box->getPosition() + penVec);
+			else
+				sphere->setPosition(sphere->getPosition() - penVec);
+
 			box->resolveCollision(sphere, contact, direction);
 		}
 
@@ -329,8 +342,15 @@ bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			box1->resolveCollision(box2, contact / (float)numContacts, &norm);
 
 			glm::vec2 displacement = pen * norm;
-			box1->setPosition(box1->getPosition() - displacement * 0.5f);
-			box2->setPosition(box2->getPosition() + displacement * 0.5f);
+
+			if (!box1->isKinematic() && !box2->isKinematic()) {
+				box1->setPosition(box1->getPosition() - displacement * 0.5f);
+				box2->setPosition(box2->getPosition() + displacement * 0.5f);
+			}
+			else if (!box1->isKinematic())
+				box1->setPosition(box1->getPosition() - displacement);
+			else
+				box2->setPosition(box2->getPosition() + displacement);
 
 			return true;
 		}
