@@ -339,7 +339,8 @@ void BreakthroughApp::execute(std::string& command)
 				float width = std::stof(commandParams[3]), height = std::stof(commandParams[4]);
 				float initialX = std::stof(commandParams[5]), initialY = std::stof(commandParams[6]);
 
-				std::vector<RigidBody*> m_softBodyParts;
+				std::vector<PhysicsObject*> m_softBodyParts;
+				std::vector<PhysicsObject*> m_springs;
 
 				// Create spheres
 				for (int i = 0; i < width; i++)
@@ -353,13 +354,18 @@ void BreakthroughApp::execute(std::string& command)
 								0.8f,                                                        // Elasticity
 								glm::vec4(0.5, 1, 0.5, 1)));                                 // Colour
 
-				// Create springs between sphere
-				for (int i = 0; i < width; i++) {
-					for (int j = 0; j < height; j++)
-					{
-						//
+				// Create springs between spheres
+				for (int i = 0; i < width - 1; i++) {
+					for (int j = 0; j < height; j++) {
+						m_springs.push_back(new Spring((RigidBody*)m_softBodyParts[i + (j * i)], (RigidBody*)m_softBodyParts[i + (j * i) + 1], radius * 4.f, 10.f));
 					}
 				}
+
+				for (auto o : m_softBodyParts)
+					m_physicsScene->addActor(o);
+
+				for (auto o : m_springs)
+					m_physicsScene->addActor(o);
 			}
 		}
 	}
