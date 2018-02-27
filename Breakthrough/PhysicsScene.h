@@ -20,6 +20,7 @@ public:
 	void clearActors() { m_actors.clear(); }
 	std::list<PhysicsObject*> getActors() { return m_actors; }
 	PhysicsObject* getLastActor() { return m_actors.back(); }
+	Spring* getLastSpring() { return m_springs.back(); }
 	void update(float dt);
 	void draw(aie::Renderer2D* renderer);
 

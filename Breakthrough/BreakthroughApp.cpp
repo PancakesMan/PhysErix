@@ -331,6 +331,37 @@ void BreakthroughApp::execute(std::string& command)
 			if (obj1 != nullptr && obj2 != nullptr && obj1 != obj2)
 				m_physicsScene->addActor(new Spring(obj1, obj2, (int)rl ? rl : 120, (int)sc ? sc : 1));
 		}
+		else if (commandParams.size() > 1 && commandParams[1] == "softbody")
+		{
+			if (commandParams.size() > 6)
+			{
+				float radius = std::stof(commandParams[2]);
+				float width = std::stof(commandParams[3]), height = std::stof(commandParams[4]);
+				float initialX = std::stof(commandParams[5]), initialY = std::stof(commandParams[6]);
+
+				std::vector<RigidBody*> m_softBodyParts;
+
+				// Create spheres
+				for (int i = 0; i < width; i++)
+					for (int j = 0; j < height; j++)
+						m_softBodyParts.push_back(
+							new Sphere(
+								glm::vec2(initialX + i * radius*4, initialY - j * radius*4), // Position
+								glm::vec2(0, 0),                                             // Velocity
+								radius*radius*PI,                                            // Mass
+								radius,                                                      // Radius
+								0.8f,                                                        // Elasticity
+								glm::vec4(0.5, 1, 0.5, 1)));                                 // Colour
+
+				// Create springs between sphere
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++)
+					{
+						//
+					}
+				}
+			}
+		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
 	{
