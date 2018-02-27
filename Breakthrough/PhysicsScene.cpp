@@ -28,12 +28,27 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::addActor(PhysicsObject* actor)
 {
-	m_actors.push_back(actor);
+	Spring* spring = dynamic_cast<Spring*>(actor);
+	if (spring != nullptr)
+		m_springs.push_back(spring);
+	else
+		m_actors.push_back(actor);
 }
 
 void PhysicsScene::removeActor(PhysicsObject* actor)
 {
+	std::list<Spring*> springsToRemove;
+	for (Spring* spring : m_springs)
+		if (spring->getFirstBody() == actor || spring->getSecondBody() == actor)
+			springsToRemove.push_back(spring);
+
 	m_actors.remove(actor);
+	delete actor;
+
+	for (Spring* spring : springsToRemove) {
+		m_springs.remove(spring);
+		delete spring;
+	}
 }
 
 void PhysicsScene::update(float dt)
@@ -45,6 +60,9 @@ void PhysicsScene::update(float dt)
 
 	while (accumulatedTime >= m_timeStep)
 	{
+		for (auto pSpring : m_springs)
+			pSpring->fixedUpdate(m_gravity, m_timeStep);
+
 		for (auto pActor : m_actors)
 			pActor->fixedUpdate(m_gravity, m_timeStep);
 		accumulatedTime -= m_timeStep;
@@ -75,6 +93,9 @@ void PhysicsScene::draw(aie::Renderer2D* renderer)
 {
 	for (auto pActor : m_actors)
 		pActor->draw(renderer);
+
+	for (auto pSpring : m_springs)
+		pSpring->draw(renderer);
 }
 
 float PhysicsScene::getTotalEnergy()

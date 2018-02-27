@@ -106,6 +106,18 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
+	if (input->wasMouseButtonPressed(1))
+	{
+		PhysicsObject* removing = nullptr;
+		for (PhysicsObject* po : m_physicsScene->getActors())
+			if (po->isInside({ input->getMouseX(), input->getMouseY() }))
+			{
+				removing = po;
+				break;
+			}
+		m_physicsScene->removeActor(removing);
+	}
+
 	if (input->wasMouseButtonPressed(0))
 	{
 		creating = true;
@@ -327,22 +339,24 @@ void BreakthroughApp::execute(std::string& command)
 				}
 			}
 
+			float rl = 0, sc = 0;
+			if (commandParams.size() > 6) rl = std::stof(commandParams[6]);
+			if (commandParams.size() > 7) sc = std::stof(commandParams[7]);
+
+
 			if (obj1 != nullptr && obj2 != nullptr && obj1 != obj2)
-				m_physicsScene->addActor(new Spring(obj1, obj2, 120, 1));
+				m_physicsScene->addActor(new Spring(obj1, obj2, (int)rl ? rl : 120, (int)sc ? sc : 1));
 		}
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
 	{
-		if (commandParams.size() == 2)
-		{
-			if (commandParams[1] == "origin")
-				m_cameraX = m_cameraY = 0;
-		}
-		else if (commandParams.size() == 3)
+		if (commandParams.size() > 2)
 		{
 			m_cameraX = std::stof(commandParams[1]);
 			m_cameraY = std::stof(commandParams[2]);
 		}
+		else if (commandParams[commandParams.size() - 1] == "origin")
+			m_cameraX = m_cameraY = 0;
 	}
 	else if (commandParams.size() > 0 && commandParams[0] == "clear")
 	{
@@ -435,7 +449,9 @@ std::vector<std::string> BreakthroughApp::split(const std::string string, char d
 			tmp.clear();
 		}
 	}
-	ret.push_back(tmp);
+
+	if (tmp.length() > 0)
+		ret.push_back(tmp);
 
 	return ret;
 }

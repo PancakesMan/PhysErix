@@ -12,6 +12,9 @@ public:
 	void fixedUpdate(glm::vec2 gravity, float timeStep);
 	void draw(aie::Renderer2D* renderer);
 
+	RigidBody* getFirstBody() { return m_body1; }
+	RigidBody* getSecondBody() { return m_body2; }
+
 	void debug() {}
 
 private:

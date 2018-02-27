@@ -3,6 +3,7 @@
 #include <list>
 
 #include "PhysicsObject.h"
+#include "Spring.h"
 
 namespace aie {
 	class Renderer2D;
@@ -45,4 +46,5 @@ protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::list<PhysicsObject*> m_actors;
+	std::list<Spring*> m_springs;
 };
