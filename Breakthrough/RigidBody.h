@@ -23,7 +23,7 @@ public:
 
 	virtual glm::vec2 getPosition() { return m_position; }
 	void setPosition(glm::vec2 position) { m_position = position; }
-	virtual glm::vec2 getVelocity() { return m_velocity; }
+	virtual glm::vec2 getVelocity() { return m_isKinematic ? glm::vec2(0,0) : m_velocity; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	float getRotation() { return m_rotation; }
 	virtual float getMass() { return m_isKinematic ? INT_MAX : m_mass; }
