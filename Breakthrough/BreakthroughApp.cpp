@@ -339,8 +339,16 @@ void BreakthroughApp::execute(std::string& command)
 				float width = std::stof(commandParams[3]), height = std::stof(commandParams[4]);
 				float initialX = std::stof(commandParams[5]), initialY = std::stof(commandParams[6]);
 
+				float rigidity = 0, damping = 0;
+				if (commandParams.size() > 7) rigidity = std::stof(commandParams[7]); else rigidity = 1000.0f;
+				if (commandParams.size() > 8) damping = std::stof(commandParams[8]); else damping = 0.1f;
+
 				std::vector<PhysicsObject*> m_softBodyParts;
 				std::vector<PhysicsObject*> m_springs;
+
+				auto getRB = [&](int x, int y) {
+					return (RigidBody*)m_softBodyParts[(x * height) + y];
+				};
 
 				// Create spheres
 				for (int i = 0; i < width; i++)
@@ -354,12 +362,35 @@ void BreakthroughApp::execute(std::string& command)
 								0.8f,                                                        // Elasticity
 								glm::vec4(0.5, 1, 0.5, 1)));                                 // Colour
 
-				// Create springs between spheres
-				for (int i = 0; i < width - 1; i++) {
-					for (int j = 0; j < height; j++) {
-						m_springs.push_back(new Spring((RigidBody*)m_softBodyParts[i + (j * i)], (RigidBody*)m_softBodyParts[i + (j * i) + 1], radius * 4.f, 10.f));
-					}
-				}
+				// Create vertical springs between spheres
+				for (int x = 0; x < width; x++)
+					for (int y = 0; y < height - 1; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x, y + 1), radius * 4.f, rigidity, damping));
+
+				// Create horizontal springs between sphere
+				for (int x = 0; x < width - 1; x++)
+					for (int y = 0; y < height; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 1, y), radius * 4.f, rigidity, damping));
+
+				// Create diagonal-right-down springs between sphere
+				for (int x = 0; x < width - 1; x++)
+					for (int y = 0; y < height - 1; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 1, y + 1), radius * 4.f * sqrtf(2), rigidity, damping));
+
+				// Create diagonal-right-up springs between sphere
+				for (int x = 0; x < width - 1; x++)
+					for (int y = 1; y < height; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 1, y - 1), radius * 4.f * sqrtf(2), rigidity, damping));
+
+				// Create vertical jump springs between spheres
+				for (int x = 0; x < width - 1; x++)
+					for (int y = 0; y < height - 2; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x, y + 2), radius * 8.f, rigidity, damping));
+
+				// Create horizontal jump springs between sphere
+				for (int x = 0; x < width - 2; x++)
+					for (int y = 0; y < height - 1; y++)
+						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 2, y), radius * 8.f, rigidity, damping));
 
 				for (auto o : m_softBodyParts)
 					m_physicsScene->addActor(o);

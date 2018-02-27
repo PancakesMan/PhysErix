@@ -17,7 +17,7 @@ public:
 
 	void addActor(PhysicsObject* actor);
 	void removeActor(PhysicsObject* actor);
-	void clearActors() { m_actors.clear(); }
+	void clearActors() { m_actors.clear(); m_springs.clear(); }
 	std::list<PhysicsObject*> getActors() { return m_actors; }
 	PhysicsObject* getLastActor() { return m_actors.back(); }
 	Spring* getLastSpring() { return m_springs.back(); }
