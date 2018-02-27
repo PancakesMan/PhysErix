@@ -12,6 +12,8 @@
 #include "Spring.h"
 #include "CompositeObject.h"
 
+#define PI 3.141592654f
+
 BreakthroughApp::BreakthroughApp() {
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < 50; i++)
@@ -140,7 +142,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
-		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 1.0f, 15, 0.8f, glm::vec4(1, 0, 0, 1))); //Box(pos, mPos - pos, 1.0f, 25, 25, 0, 0.8f, glm::vec4(1, 0, 0, 1))
+		m_physicsScene->addActor(new Sphere(pos, mPos - pos, 225.f*PI, 15, 0.8f, glm::vec4(1, 0, 0, 1))); //Box(pos, mPos - pos, 1.0f, 25, 25, 0, 0.8f, glm::vec4(1, 0, 0, 1))
 		count++;
 	}
 
@@ -255,7 +257,7 @@ void BreakthroughApp::execute(std::string& command)
 				pos.y = std::stof(commandParams[4]) + y;
 			}
 
-			Sphere* sphere = new Sphere(pos, glm::vec2(0, 0), 1.0f, radius, 0.8f, glm::vec4(1, 0, 0, 1));
+			Sphere* sphere = new Sphere(pos, glm::vec2(0, 0), radius*radius*PI, radius, 0.8f, glm::vec4(1, 0, 0, 1));
 
 			if (commandParams[commandParams.size() - 1] == "-k")
 				sphere->setKinematic(true);
@@ -284,7 +286,7 @@ void BreakthroughApp::execute(std::string& command)
 				height = std::stof(commandParams[5]);
 			}
 
-			Box* box = new Box(pos, glm::vec2(0, 0), 1.0f, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1));
+			Box* box = new Box(pos, glm::vec2(0, 0), width*height, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1));
 
 			if (commandParams[commandParams.size() - 1] == "-k")
 				box->setKinematic(true);

@@ -67,8 +67,8 @@ void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2*
 
 	if (v1 > v2)
 	{
-		float m1 = 1.0f / (1.0f / m_mass + (r1*r1) / m_moment);
-		float m2 = 1.0f / (1.0f / other->getMass() + (r2*r2) / other->m_moment);
+		float m1 = 1.0f / (1.0f / getMass() + (r1*r1) / getMoment());
+		float m2 = 1.0f / (1.0f / other->getMass() + (r2*r2) / other->getMoment());
 
 		float elasticity = (m_elasticity + other->getElasticity()) / 2;
 

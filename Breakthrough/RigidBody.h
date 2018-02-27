@@ -28,7 +28,7 @@ public:
 	float getRotation() { return m_rotation; }
 	virtual float getMass() { return m_isKinematic ? INT_MAX : m_mass; }
 	float getElasticity() { return m_elasticity; }
-	float getMoment() { return m_moment; }
+	float getMoment() { return m_isKinematic ? INT_MAX : m_moment; }
 	float getAngularVelocity() { return m_angularVelocity; }
 	float getTotalEnergy(glm::vec2 gravity);
 
