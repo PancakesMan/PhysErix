@@ -346,6 +346,8 @@ void BreakthroughApp::execute(std::string& command)
 				std::vector<PhysicsObject*> m_softBodyParts;
 				std::vector<PhysicsObject*> m_springs;
 
+				// Returns a RigidBody* from the m_softBodyParts
+				// list, treating the list as a 2D array
 				auto getRB = [&](int x, int y) {
 					return (RigidBody*)m_softBodyParts[(x * height) + y];
 				};
