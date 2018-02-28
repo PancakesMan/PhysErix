@@ -158,7 +158,7 @@ void BreakthroughApp::update(float deltaTime) {
 		}
 
 		for (auto c : input->getPressedCharacters())
-			command += (char)c;
+			command += (char)c | 32;
 	}
 
 	//update physics code
