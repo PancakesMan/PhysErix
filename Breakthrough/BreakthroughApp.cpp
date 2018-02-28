@@ -94,7 +94,7 @@ void BreakthroughApp::update(float deltaTime) {
 	{
 		PhysicsObject* removing = nullptr;
 		for (PhysicsObject* po : m_physicsScene->getActors())
-			if (po->isInside({ input->getMouseX(), input->getMouseY() }))
+			if (po->isInside({ input->getMouseX() + m_cameraX, input->getMouseY() + m_cameraY }))
 			{
 				removing = po;
 				break;
@@ -324,12 +324,12 @@ void BreakthroughApp::execute(std::string& command)
 			}
 
 			float rl = 0, sc = 0;
-			if (commandParams.size() > 6) rl = std::stof(commandParams[6]);
-			if (commandParams.size() > 7) sc = std::stof(commandParams[7]);
+			if (commandParams.size() > 6) rl = std::stof(commandParams[6]); else rl = 120.0f;
+			if (commandParams.size() > 7) sc = std::stof(commandParams[7]); else sc = 1.0f;
 
 
 			if (obj1 != nullptr && obj2 != nullptr && obj1 != obj2)
-				m_physicsScene->addActor(new Spring(obj1, obj2, (int)rl ? rl : 120, (int)sc ? sc : 1));
+				m_physicsScene->addActor(new Spring(obj1, obj2, rl, sc));
 		}
 		else if (commandParams.size() > 1 && commandParams[1] == "softbody")
 		{
