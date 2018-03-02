@@ -8,7 +8,6 @@ enum ShapeType {
 	SPHERE,
 	BOX,
 	SHAPE_COUNT,
-	COMPOSITE
 };
 
 namespace aie {

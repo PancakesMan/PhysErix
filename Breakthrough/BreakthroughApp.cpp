@@ -10,11 +10,12 @@
 #include "Plane.h"
 #include "Box.h"
 #include "Spring.h"
-#include "CompositeObject.h"
 
 #define PI 3.141592654f
 
 BreakthroughApp::BreakthroughApp() {
+
+	// Setup RNG
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < 50; i++)
 		rand();
@@ -33,28 +34,23 @@ bool BreakthroughApp::startup() {
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
+	// Create and setup Physics Scene
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Box* centerBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
-	Box* aboveBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 + 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
-	Box* belowBox = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 50), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
-	Box* belowBox2 = new Box(glm::vec2(getWindowWidth() / 2, getWindowHeight() / 2 - 300), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 
 	leftBox->setKinematic(true);
 
-	//m_physicsScene->addActor(centerBox);
 	m_physicsScene->addActor(leftBox);
 	m_physicsScene->addActor(rightBox);
-	//m_physicsScene->addActor(aboveBox);
-	//m_physicsScene->addActor(belowBox);
-	//m_physicsScene->addActor(belowBox2);
 
+	// Join LeftBox and RightBox with Spring
 	m_physicsScene->addActor(new Spring(leftBox, rightBox, 120.0f, 1, 0.1));
 
+	// Create screen border walls
 	Plane* plane = new Plane(glm::vec2(1, 0), 50);
 	Plane* plane2 = new Plane(glm::vec2(1, 0), getWindowWidth() - 50);
 	Plane* plane3 = new Plane(glm::vec2(0, 1), 50);
@@ -67,9 +63,6 @@ bool BreakthroughApp::startup() {
 
 	leftBox->applyForce(glm::vec2(20, 0), glm::vec2(20, 0));
 	rightBox->applyForce(glm::vec2(-20, 0), glm::vec2(20, 0));
-	aboveBox->applyForce(glm::vec2(0, -20), glm::vec2(20, 0));
-	belowBox->applyForce(glm::vec2(0, -20), glm::vec2(20, 0));
-	belowBox2->applyForce(glm::vec2(0, 20), glm::vec2(20, 0));
 
 	return true;
 }
@@ -90,6 +83,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
+	// Remove object if you right click it
 	if (input->wasMouseButtonPressed(1))
 	{
 		PhysicsObject* removing = nullptr;
@@ -102,6 +96,7 @@ void BreakthroughApp::update(float deltaTime) {
 		m_physicsScene->removeActor(removing);
 	}
 
+	// start creating ball at mouse position
 	if (input->wasMouseButtonPressed(0))
 	{
 		creating = true;
@@ -112,6 +107,8 @@ void BreakthroughApp::update(float deltaTime) {
 		pos.y = input->getMouseY() + y;
 	}
 
+	// Allow moving mouse to 
+	// determine balls velocity
 	if (input->isMouseButtonDown(0))
 	{
 		float x, y;
@@ -121,6 +118,8 @@ void BreakthroughApp::update(float deltaTime) {
 		mPos.y = input->getMouseY() + y;
 	}
 
+	// Create ball with initial position
+	// and velocity
 	if (input->wasMouseButtonReleased(0))
 	{
 		creating = false;
@@ -128,13 +127,16 @@ void BreakthroughApp::update(float deltaTime) {
 		count++;
 	}
 
+	// Pause and open command console
 	if (input->wasKeyPressed(aie::INPUT_KEY_GRAVE_ACCENT))
 	{
 		paused = !paused;
 		command = "";
 	}
 
+	// Code for entering command
 	if (paused) {
+		// timeout to allow holding backspace
 		timeout += deltaTime;
 
 		if (input->wasKeyPressed(aie::INPUT_KEY_ENTER))
@@ -146,9 +148,11 @@ void BreakthroughApp::update(float deltaTime) {
 			command = command.substr(0, command.length() - 1);
 		}
 
+		// Shortcut to re-use last used command
 		if (input->wasKeyPressed(aie::INPUT_KEY_UP))
 			command = lastUsedCommand;
 
+		// Insert mouse position into command
 		if (input->wasKeyPressed(aie::INPUT_KEY_TAB))
 		{
 			if (command.length() > 0 && command[command.length() - 1] != ' ')
@@ -157,6 +161,7 @@ void BreakthroughApp::update(float deltaTime) {
 			command += std::to_string((int)input->getMouseY() + (int)m_cameraY) + " ";
 		}
 
+		// Place pressed characters (as lowercase) into command
 		for (auto c : input->getPressedCharacters())
 			command += (char)c | 32;
 	}
@@ -165,6 +170,7 @@ void BreakthroughApp::update(float deltaTime) {
 	if (!paused) {
 		m_physicsScene->update(deltaTime);
 
+		// Move the camera with left/right/up/down arrows
 		if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 			m_cameraX -= 2;
 
@@ -190,8 +196,8 @@ void BreakthroughApp::draw() {
 	// draw your stuff here!
 	m_physicsScene->draw(m_2dRenderer);
 	
-	// output some text, uses the last used colour
-	//m_2dRenderer->drawText(m_font, std::to_string(m_physicsScene->getTotalEnergy()).c_str(), 0, 5); //std::to_string(count).c_str()
+	// Draw command at bottom left 
+	// of screen, if game is paused
 	if (paused) {
 		float length = m_font->getStringWidth(arrow.c_str()), x, y;
 		m_2dRenderer->getCameraPos(x, y);
@@ -202,6 +208,9 @@ void BreakthroughApp::draw() {
 		m_2dRenderer->drawText(m_font, std::string("_").c_str(), x + 75 + m_font->getStringWidth(command.c_str()), y + 8);
 	}
 
+	// Draw line to represent
+	// direction and magnitude of
+	// sphere being created with mouse
 	if (creating)
 	{
 		m_2dRenderer->setRenderColour(1, 1, 1, 1);
@@ -221,19 +230,22 @@ void BreakthroughApp::execute(std::string& command)
 	aie::Input* input = aie::Input::getInstance();
 	std::vector<std::string> commandParams = split(command, ' ');
 	
+	// Branch for create commands
 	if (commandParams.size() > 0 && commandParams[0] == "create")
 	{
-		if (commandParams.size() > 1 && commandParams[1] == "sphere")
+		// Create command for spheres
+		if (commandParams.size() > 3 && commandParams[1] == "sphere")
 		{
 			glm::vec2 pos(0, 0);
 			float radius = std::stof(commandParams[2]);
 
+			// Get x,y of mouse if mouse is used as parameter
 			if (commandParams[3] == "mouse")
 			{
 				pos.x = input->getMouseX() + x;
 				pos.y = input->getMouseY() + y;
 			}
-			else
+			else if (commandParams.size() > 4)
 			{
 				pos.x = std::stof(commandParams[3]) + x;
 				pos.y = std::stof(commandParams[4]) + y;
@@ -241,16 +253,20 @@ void BreakthroughApp::execute(std::string& command)
 
 			Sphere* sphere = new Sphere(pos, glm::vec2(0, 0), radius*radius*PI, radius, 0.8f, glm::vec4(1, 0, 0, 1));
 
+			// Set sphere as kinematic if command end with -k
 			if (commandParams[commandParams.size() - 1] == "-k")
 				sphere->setKinematic(true);
 
 			m_physicsScene->addActor(sphere);
 		}
-		else if (commandParams.size() > 1 && commandParams[1] == "box")
+
+		// Create command for boxes
+		else if (commandParams.size() > 4 && commandParams[1] == "box")
 		{
 			glm::vec2 pos(0, 0);
-			float width, height;
+			float width = 10, height = 10;
 
+			// Get x,y of mouse if mouse is used as parameter
 			if (commandParams[2] == "mouse")
 			{
 				pos.x = input->getMouseX() + x;
@@ -259,7 +275,7 @@ void BreakthroughApp::execute(std::string& command)
 				width = std::stof(commandParams[3]);
 				height = std::stof(commandParams[4]);
 			}
-			else
+			else if (commandParams.size() > 5)
 			{
 				pos.x = std::stof(commandParams[2]) + x;
 				pos.y = std::stof(commandParams[3]) + y;
@@ -270,12 +286,15 @@ void BreakthroughApp::execute(std::string& command)
 
 			Box* box = new Box(pos, glm::vec2(0, 0), width*height, width, height, 0, 0.8f, glm::vec4(0, 0, 1, 1));
 
+			// Set sphere as kinematic if command end with -k
 			if (commandParams[commandParams.size() - 1] == "-k")
 				box->setKinematic(true);
 
 			m_physicsScene->addActor(box);
 		}
-		else if (commandParams.size() > 1 && commandParams[1] == "plane")
+
+		// Create command for planes
+		else if (commandParams.size() > 3 && commandParams[1] == "plane")
 		{
 			if (commandParams[2] == "vertical")
 			{
@@ -290,6 +309,8 @@ void BreakthroughApp::execute(std::string& command)
 					m_physicsScene->addActor(new Plane(normal, input->getMouseY() + m_cameraY));
 			}
 		}
+
+		// Create command for border planes
 		else if (commandParams.size() > 1 && commandParams[1] == "borders")
 		{
 			glm::vec2 vertical(1, 0);
@@ -304,8 +325,11 @@ void BreakthroughApp::execute(std::string& command)
 			m_physicsScene->addActor(new Plane(horizontal, 0 + yOffset + m_cameraY));
 			m_physicsScene->addActor(new Plane(horizontal, getWindowHeight() - yOffset + m_cameraY));
 		}
-		else if (commandParams.size() > 1 && commandParams[1] == "spring")
+
+		// Create command for springs
+		else if (commandParams.size() > 5 && commandParams[1] == "spring")
 		{
+			// Positions of objects 1 and 2
 			glm::vec2 p1 = glm::vec2(std::stof(commandParams[2]), std::stof(commandParams[3]));
 			glm::vec2 p2 = glm::vec2(std::stof(commandParams[4]), std::stof(commandParams[5]));
 
@@ -323,14 +347,15 @@ void BreakthroughApp::execute(std::string& command)
 				}
 			}
 
-			float rl = 0, sc = 0;
-			if (commandParams.size() > 6) rl = std::stof(commandParams[6]); else rl = 120.0f;
-			if (commandParams.size() > 7) sc = std::stof(commandParams[7]); else sc = 1.0f;
-
+			float restLength = 120, springCoefficient = 1.0f;
+			if (commandParams.size() > 6) restLength = std::stof(commandParams[6]);
+			if (commandParams.size() > 7) springCoefficient = std::stof(commandParams[7]);
 
 			if (obj1 != nullptr && obj2 != nullptr && obj1 != obj2)
-				m_physicsScene->addActor(new Spring(obj1, obj2, rl, sc));
+				m_physicsScene->addActor(new Spring(obj1, obj2, restLength, springCoefficient));
 		}
+
+		// Create command for softbody
 		else if (commandParams.size() > 1 && commandParams[1] == "softbody")
 		{
 			if (commandParams.size() > 6)
@@ -339,9 +364,9 @@ void BreakthroughApp::execute(std::string& command)
 				float width = std::stof(commandParams[3]), height = std::stof(commandParams[4]);
 				float initialX = std::stof(commandParams[5]), initialY = std::stof(commandParams[6]);
 
-				float rigidity = 0, damping = 0;
-				if (commandParams.size() > 7) rigidity = std::stof(commandParams[7]); else rigidity = 1000.0f;
-				if (commandParams.size() > 8) damping = std::stof(commandParams[8]); else damping = 0.1f;
+				float rigidity = 1000.0f, damping = 0.1f;
+				if (commandParams.size() > 7) rigidity = std::stof(commandParams[7]);
+				if (commandParams.size() > 8) damping = std::stof(commandParams[8]);
 
 				std::vector<PhysicsObject*> m_softBodyParts;
 				std::vector<PhysicsObject*> m_springs;
@@ -385,15 +410,16 @@ void BreakthroughApp::execute(std::string& command)
 						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 1, y - 1), radius * 4.f * sqrtf(2), rigidity, damping));
 
 				// Create vertical jump springs between spheres
-				for (int x = 0; x < width - 1; x++)
+				for (int x = 0; x < width; x++)
 					for (int y = 0; y < height - 2; y++)
 						m_springs.push_back(new Spring(getRB(x, y), getRB(x, y + 2), radius * 8.f, rigidity, damping));
 
 				// Create horizontal jump springs between sphere
 				for (int x = 0; x < width - 2; x++)
-					for (int y = 0; y < height - 1; y++)
+					for (int y = 0; y < height; y++)
 						m_springs.push_back(new Spring(getRB(x, y), getRB(x + 2, y), radius * 8.f, rigidity, damping));
 
+				// Add obbjects and springs to the scene
 				for (auto o : m_softBodyParts)
 					m_physicsScene->addActor(o);
 
@@ -402,6 +428,8 @@ void BreakthroughApp::execute(std::string& command)
 			}
 		}
 	}
+
+	// Branch for moveto command
 	else if (commandParams.size() > 0 && commandParams[0] == "moveto")
 	{
 		if (commandParams.size() > 2)
@@ -412,10 +440,14 @@ void BreakthroughApp::execute(std::string& command)
 		else if (commandParams[commandParams.size() - 1] == "origin")
 			m_cameraX = m_cameraY = 0;
 	}
+
+	// Branch for clear command
 	else if (commandParams.size() > 0 && commandParams[0] == "clear")
 	{
 		m_physicsScene->clearActors();
 	}
+
+	// Branch for move last created to (mlct) command
 	else if (commandParams.size() > 0 && commandParams[0] == "mlct")
 	{
 		PhysicsObject* lastCreated = m_physicsScene->getLastActor();
@@ -425,6 +457,8 @@ void BreakthroughApp::execute(std::string& command)
 		if (rigid == nullptr)
 			plane = dynamic_cast<Plane*>(lastCreated);
 
+		// If mouse is passed in for object position
+		// get object at mouse's position
 		if (commandParams.size() > 1 && commandParams[1] == "mouse")
 		{
 			float x = input->getMouseX(), y = input->getMouseY();
@@ -444,6 +478,10 @@ void BreakthroughApp::execute(std::string& command)
 				}
 			}
 		}
+
+		// If mouse isn't passed in, and we have
+		// parameters for x and y position
+		// get object at those positions
 		else if (commandParams.size() > 2)
 		{
 			float x = std::stof(commandParams[1]), y = std::stof(commandParams[2]);
@@ -461,6 +499,8 @@ void BreakthroughApp::execute(std::string& command)
 			}
 		}
 	}
+
+	// Branch for setgrav command
 	else if (commandParams.size() > 0 && commandParams[0] == "setgrav")
 	{
 		if (commandParams.size() > 2)
@@ -474,20 +514,27 @@ void BreakthroughApp::execute(std::string& command)
 			}
 		}
 	}
-	else if (commandParams.size() >= 4 && commandParams[0] == "setbackcolour")
+
+	// Branch for setbackcolour command
+	else if (commandParams.size() > 3 && commandParams[0] == "setbackcolour")
 	{
-		float r, g, b;
+		float r, g, b, a = 1.0f;
 		r = std::stof(commandParams[1]);
 		g = std::stof(commandParams[2]);
 		b = std::stof(commandParams[3]);
 
-		setBackgroundColour(r, g, b);
+		if (commandParams.size() > 4) a = std::stof(commandParams[4]);
+		setBackgroundColour(r, g, b, a);
 	}
 
+	// set lastUsedCommand to the
+	// command that was entered, 
+	// and clear the current command
 	lastUsedCommand = command;
 	command = "";
 }
 
+// Split string into array
 std::vector<std::string> BreakthroughApp::split(const std::string string, char delim)
 {
 	std::string tmp = "";

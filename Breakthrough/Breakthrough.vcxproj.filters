@@ -36,9 +36,6 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="CompositeObject.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Box.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CompositeObject.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
