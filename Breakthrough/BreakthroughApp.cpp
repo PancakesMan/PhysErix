@@ -39,29 +39,22 @@ bool BreakthroughApp::startup() {
 	m_physicsScene->setGravity(glm::vec2(0, -98));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Box* leftBox = new Box(glm::vec2(getWindowWidth() / 2 - 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
-	Box* rightBox = new Box(glm::vec2(getWindowWidth() / 2 + 50, getWindowHeight() / 2), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	// Create scene border walls
+	execute(std::string("create borders 50"));
+
+	int centerX = getWindowWidth() / 2, centerY = getWindowHeight() / 2;
+
+	// Create 2 boxes for spring demonstration
+	Box* leftBox = new Box(glm::vec2(centerX - 50, centerY), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
+	Box* rightBox = new Box(glm::vec2(centerX + 50, centerY), glm::vec2(0, 0), 1.0f, 30, 30, 0.0f, 0.8f, glm::vec4(1, 1, 1, 1));
 
 	leftBox->setKinematic(true);
-
 	m_physicsScene->addActor(leftBox);
 	m_physicsScene->addActor(rightBox);
 
 	// Join LeftBox and RightBox with Spring
 	m_physicsScene->addActor(new Spring(leftBox, rightBox, 120.0f, 1, 0.1));
 
-	// Create screen border walls
-	Plane* plane = new Plane(glm::vec2(1, 0), 50);
-	Plane* plane2 = new Plane(glm::vec2(1, 0), getWindowWidth() - 50);
-	Plane* plane3 = new Plane(glm::vec2(0, 1), 50);
-	Plane* plane4 = new Plane(glm::vec2(0, 1), getWindowHeight() - 50);
-
-	m_physicsScene->addActor(plane);
-	m_physicsScene->addActor(plane2);
-	m_physicsScene->addActor(plane3);
-	m_physicsScene->addActor(plane4);
-
-	leftBox->applyForce(glm::vec2(20, 0), glm::vec2(20, 0));
 	rightBox->applyForce(glm::vec2(-20, 0), glm::vec2(20, 0));
 
 	return true;

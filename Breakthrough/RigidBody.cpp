@@ -54,10 +54,9 @@ void RigidBody::applyForceToActor(RigidBody* actor2, glm::vec2 force)
 
 void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2* collisionNormal)
 {
-	//glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
+	// Get vector in direction of collision
 	glm::vec2 normal = collisionNormal ? *collisionNormal : glm::normalize(other->getPosition() - m_position);
 	glm::vec2 perp(normal.y, -normal.x);
-
 
 	float r1 = glm::dot(contact - m_position, -perp);
 	float r2 = glm::dot(contact - other->getPosition(), perp);
@@ -67,6 +66,7 @@ void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2*
 
 	if (v1 > v2)
 	{
+		// Calculate force to apply to RigidBodies involved in collision
 		float m1 = 1.0f / (1.0f / getMass() + (r1*r1) / getMoment());
 		float m2 = 1.0f / (1.0f / other->getMass() + (r2*r2) / other->getMoment());
 
@@ -77,15 +77,6 @@ void RigidBody::resolveCollision(RigidBody* other, glm::vec2 contact, glm::vec2*
 		applyForce(-force, contact - m_position);
 		other->applyForce(force, contact - other->getPosition());
 	}
-	/*glm::vec2 relativeVelocity = other->getVelocity() - m_velocity;
-
-	if (glm::dot(normal, relativeVelocity) > 0)
-		return;
-
-	float j = glm::dot(-(1 + m_elasticity) * relativeVelocity, normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->getMass())));
-
-	glm::vec2 force = normal * j;
-	applyForceToActor(other, force);*/
 }
 
 float RigidBody::getTotalEnergy(glm::vec2 gravity)

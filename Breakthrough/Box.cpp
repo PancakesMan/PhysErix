@@ -18,30 +18,6 @@ void Box::draw(aie::Renderer2D* renderer)
 {
 	renderer->setRenderColour(m_colour.r, m_colour.g, m_colour.b, m_colour.a);
 	renderer->drawBox(m_position.x, m_position.y, m_width, m_height, m_rotation);
-
-	//enum Corners { BottomLeft = 0, TopLeft, BottomRight, TopRight}; //enum Corners { TopLeft = 0, TopRight, BottomLeft, BottomRight};
-	//std::vector<glm::vec2> corners;
-
-	//for (float x = -getWidth() / 2; x < getWidth(); x += getWidth())
-	//{
-	//	for (float y = -getHeight() / 2; y < getHeight(); y += getHeight())
-	//	{
-	//		glm::vec2 p = getPosition() + x * getLocalX() + y * getLocalY();
-	//		corners.push_back(p);
-	//	}
-	//}
-
-	//renderer->setRenderColour(1, 0, 0, 1);
-	//renderer->drawCircle(corners[BottomLeft].x, corners[TopLeft].y, 2);
-
-	//renderer->setRenderColour(0, 1, 0, 1);
-	//renderer->drawCircle(corners[TopLeft].x, corners[TopRight].y, 2);
-
-	//renderer->setRenderColour(0, 0, 1, 1);
-	//renderer->drawCircle(corners[BottomRight].x, corners[BottomLeft].y, 2);
-
-	//renderer->setRenderColour(1, 1, 0, 1);
-	//renderer->drawCircle(corners[TopRight].x, corners[BottomRight].y, 2);
 }
 
 bool Box::checkCollision(PhysicsObject* pOther)
@@ -53,6 +29,7 @@ void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	RigidBody::fixedUpdate(gravity, timeStep);
 
+	// Calculate positions of points factoring in objects rotation
 	float cs = std::cosf(m_rotation);
 	float sn = std::sinf(m_rotation);
 	m_localX = glm::normalize(glm::vec2(cs, sn));
@@ -60,6 +37,8 @@ void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 }
 
 bool Box::isInside(glm::vec2 point) {
+	// Check if point is inside the object
+	// assuming no rotation
 	return point.x > m_position.x - m_width / 2
 		&& point.x < m_position.x + m_width / 2
 		&& point.y > m_position.y - m_height / 2

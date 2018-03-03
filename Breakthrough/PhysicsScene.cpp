@@ -110,6 +110,7 @@ void PhysicsScene::checkForCollision()
 {
 	if (m_actors.size() == 0) return;
 
+	// Need to check for collisions against all objects except this one.
 	for (auto it = m_actors.begin(); it != std::prev(m_actors.end()); it++)
 		for (auto it2 = std::next(it); it2 != m_actors.end(); it2++)
 		{
@@ -122,9 +123,11 @@ void PhysicsScene::checkForCollision()
 			if (shapeId1 < 0 || shapeId2 < 0)
 				continue;
 
+			// Using function pointers
 			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
+				// Did a collision occur?
 				collisionFunctionPtr(object1, object2);
 		}
 }
@@ -146,14 +149,17 @@ bool PhysicsScene::plane2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 
 bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	// Try to cast objects to sphere and plane
 	Sphere* sphere = dynamic_cast<Sphere*>(lhs);
 	Plane* plane = dynamic_cast<Plane*>(rhs);
 
+	// If we are successful then test for collision
 	if (sphere != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 
+		// Double sided plane
 		if (sphereToPlane < 0)
 		{
 			collisionNormal *= -1;
@@ -177,19 +183,25 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 
 bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	// Try to cast objects to Sphere and Sphere
 	Sphere* sphere1 = dynamic_cast<Sphere*>(lhs);
 	Sphere* sphere2 = dynamic_cast<Sphere*>(rhs);
 
+	// If we're successful do collission check
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
 		glm::vec2 delta = sphere2->getPosition() - sphere1->getPosition();
 		float distance = glm::length(delta);
 		float intersection = sphere1->getRadius() + sphere2->getRadius() - distance;
 
+		// If spheres are overlapping
 		if (intersection > 0)
 		{
 			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() + sphere2->getRadius())) * delta / distance;
 
+			// Do checks to make sure we apply
+			// entire force to 1 object if the
+			// other is kinematic
 			if (!sphere1->isKinematic() && !sphere2->isKinematic()) {
 				sphere1->setPosition(sphere1->getPosition() + contactForce);
 				sphere2->setPosition(sphere2->getPosition() - contactForce);
@@ -208,16 +220,20 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 
 bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	// Try to cast objects to sphere and box
 	Sphere* sphere = dynamic_cast<Sphere*>(lhs);
 	Box* box = dynamic_cast<Box*>(rhs);
 
+	// If we're successful do collision check
 	if (sphere != nullptr && box != nullptr)
 	{
+		// Get distance between box center and sphere center
 		glm::vec2 circlePos = sphere->getPosition() - box->getPosition();
 		float hw = box->getWidth() / 2, hh = box->getHeight() / 2;
 		int numContacts = 0;
 		glm::vec2 contact(0, 0);
 
+		// Check for sphere collision with the box corners
 		for (float x = -hw; x <= hw; x += box->getWidth()) {
 			for (float y = -hh; y <= hh; y += box->getHeight()) {
 				glm::vec2 p = x * box->getLocalX() + y * box->getLocalY();
@@ -232,6 +248,7 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 		glm::vec2* direction = nullptr;
 		glm::vec2 localPos(glm::dot(box->getLocalX(), circlePos), glm::dot(box->getLocalY(), circlePos));
 
+		// Check for sphere collision with box edges
 		if (localPos.y < hh && localPos.y > -hh) {
 			if (localPos.x > 0 && localPos.x < hw + sphere->getRadius()) {
 				numContacts++;
@@ -257,12 +274,16 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 			}
 		}
 
+		// If the sphere made contact with the box
 		if (numContacts > 0) {
 			contact = box->getPosition() + (1.0f / numContacts) * (box->getLocalX() * contact.x + box->getLocalY() * contact.y);
 
 			float pen = sphere->getRadius() - glm::length(contact - sphere->getPosition());
 			glm::vec2 penVec = glm::normalize(contact - sphere->getPosition()) * pen;
 
+			// Do checks to make sure we apply
+			// entire force to 1 object if the
+			// other is kinematic
 			if (!box->isKinematic() && !sphere->isKinematic()) {
 				box->setPosition(box->getPosition() + penVec * 0.5f);
 				sphere->setPosition(sphere->getPosition() - penVec * 0.5f);
@@ -283,9 +304,11 @@ bool PhysicsScene::sphere2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 
 bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	// Try to cast objects to box and plane
 	Box* box = dynamic_cast<Box*>(lhs);
 	Plane* plane = dynamic_cast<Plane*>(rhs);
 
+	// If successful, check for collision
 	if (box != nullptr && plane != nullptr)
 	{
 		int numContacts = 0;
@@ -294,9 +317,11 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
 		float penetration = 0;
 
+		// Get distance of box from plane
 		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
 		float comFromPlane = glm::dot(box->getPosition() - planeOrigin, plane->getNormal());
 
+		// Check for collision of box corners with plane
 		for (float x = -box->getWidth() / 2; x < box->getWidth(); x += box->getWidth())
 		{
 			for (float y = -box->getHeight() / 2; y < box->getHeight(); y += box->getHeight())
@@ -325,6 +350,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* lhs, PhysicsObject* rhs)
 			}
 		}
 
+		// If there was a collision, resolve it
 		if (numContacts > 0)
 		{
 			float collisionV = contactV / (float)numContacts;
@@ -347,9 +373,11 @@ bool PhysicsScene::box2Sphere(PhysicsObject* lhs, PhysicsObject* rhs)
 
 bool PhysicsScene::box2Box(PhysicsObject* lhs, PhysicsObject* rhs)
 {
+	// Try to cast objects to box and box
 	Box* box1 = dynamic_cast<Box*>(lhs);
 	Box* box2 = dynamic_cast<Box*>(rhs);
 
+	// If successful, check for collisions
 	if (box1 != nullptr && box2 != nullptr)
 	{
 		glm::vec2 boxPos = box2->getPosition() - box1->getPosition();

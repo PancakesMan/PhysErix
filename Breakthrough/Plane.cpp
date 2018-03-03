@@ -45,6 +45,7 @@ void Plane::resetPosition()
 
 void Plane::resolveCollision(RigidBody* actor, glm::vec2 contact)
 {
+	// Calculate force to apply to object colliding with infinite mass plane
 	glm::vec2 vRel = actor->getVelocity();
 	float e = actor->getElasticity();
 	float j = glm::dot(-(1 + e) * vRel, m_normal) / (1 / actor->getMass());
