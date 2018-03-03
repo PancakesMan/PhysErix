@@ -23,21 +23,21 @@ void Sphere::draw(aie::Renderer2D* renderer)
 	renderer->drawCircle(m_position.x, m_position.y, m_radius);
 }
 
-//bool Sphere::checkCollision(PhysicsObject* pOther)
-//{
-//	Sphere* other = dynamic_cast<Sphere*>(pOther);
-//	if (other == nullptr) return false;
-//
-//	switch (other->getShapeID())
-//	{
-//		case ShapeType::SPHERE:
-//			return glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
-//			break;
-//		default:
-//			return false;
-//			break;
-//	}
-//}
+bool Sphere::checkCollision(PhysicsObject* pOther)
+{
+	Sphere* other = dynamic_cast<Sphere*>(pOther);
+	if (other == nullptr) return false;
+
+	switch (other->getShapeID())
+	{
+		case ShapeType::SPHERE:
+			return glm::distance(other->getPosition(), m_position) < m_radius + other->getRadius();
+			break;
+		default:
+			return false;
+			break;
+	}
+}
 
 bool Sphere::isInside(glm::vec2 point) {
 	return glm::distance(point, m_position) < m_radius;
