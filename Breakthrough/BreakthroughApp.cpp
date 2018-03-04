@@ -55,8 +55,6 @@ bool BreakthroughApp::startup() {
 	// Join LeftBox and RightBox with Spring
 	m_physicsScene->addActor(new Spring(leftBox, rightBox, 120.0f, 1, 0.1));
 
-	rightBox->applyForce(glm::vec2(-20, 0), glm::vec2(20, 0));
-
 	return true;
 }
 
