@@ -42,6 +42,12 @@ bool BreakthroughApp::startup() {
 	// Create scene border walls
 	execute(std::string("create borders 50"));
 
+	// Create a softbody half way up the left side of the screen
+	int xpos = 100, ypos = getWindowHeight() / 2;
+	std::string softbodyCommand = "create softbody 5 5 5 ";
+	softbodyCommand += std::to_string(xpos) + " " + std::to_string(ypos);
+	execute(softbodyCommand);
+
 	int centerX = getWindowWidth() / 2, centerY = getWindowHeight() / 2;
 
 	// Create 2 boxes for spring demonstration
